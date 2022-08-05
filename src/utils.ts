@@ -90,6 +90,7 @@ export function file(
   );
 }
 
+/** A handler that serves static files in a directory */
 export function staticHandler(fsRoot = "public", serveIndex = true): Handler {
   return errorBoundary(
     async (req) => {

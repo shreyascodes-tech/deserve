@@ -7,10 +7,7 @@ import { serve, ServeInit } from "https://deno.land/std@0.151.0/http/server.ts";
 import { DeserveConfig, PromiseOr } from "./src/types.ts";
 import { useURL } from "./src/utils.ts";
 
-export function defaultOnListenHandler(params: {
-  hostname: string;
-  port: number;
-}) {
+function defaultOnListenHandler(params: { hostname: string; port: number }) {
   const hostname =
     params.hostname === "0.0.0.0" ? "localhost" : params.hostname;
 
@@ -19,7 +16,7 @@ export function defaultOnListenHandler(params: {
   console.log(`${magenta("Listening on")} ${bold(brightMagenta(url))}`);
 }
 
-export function defaultErrorHandler(error: unknown) {
+function defaultErrorHandler(error: unknown) {
   console.error(error);
   return new Response("Internal Server Error", { status: 500 });
 }

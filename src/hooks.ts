@@ -6,6 +6,18 @@ import {
 import { Hook } from "./types.ts";
 import { useURL } from "./utils.ts";
 
+/**
+ * Creates a hook that that logs incomming requests and the response times to the console
+ *
+ * ```ts
+ *  import { deserve, createLogger } from "https://deno.land/x/deserve/mod.ts"
+ *
+ *  const app = deserve({
+ *    hooks: [ createLogger() ]
+ *    handlers: // ...
+ *  })
+ * ```
+ */
 export function createLogger(): Hook {
   let start: number;
 
