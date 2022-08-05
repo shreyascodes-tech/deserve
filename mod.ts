@@ -31,7 +31,7 @@ class Deserve {
     );
 
     for (const { initial } of this.config.hooks) {
-      const res = await initial(request);
+      const res = await initial?.(request);
       if (res === null || res === undefined) continue;
       resp = res;
       break;
@@ -45,7 +45,7 @@ class Deserve {
     }
 
     for (const { final } of this.config.hooks) {
-      final(request);
+      final?.(request);
     }
 
     return resp;
@@ -60,6 +60,24 @@ class Deserve {
   }
 }
 
+/**
+ * Creates a Deserve
+ * ```ts
+ *   import { deserve } from "https://deno.land/x/deserve@v0.1.1/mod.ts";
+ *
+ *   // Create the app
+ *   const app = deserve({
+ *      handlers: [
+ *        (req) => new Response("Hello World")
+ *      ]
+ *   })
+ *
+ *  // Start the server
+ *  app.listen({
+ *    port: 80
+ *  })
+ * ```
+ */
 export function deserve(config: Partial<DeserveConfig>) {
   return new Deserve({
     handlers: config.handlers ?? [],

@@ -5,12 +5,42 @@ import {
   ServeFileOptions,
 } from "https://deno.land/std@0.151.0/http/file_server.ts";
 
-/** A pass through function for better type checking for handler functions  */
+/** A pass through function for better type checking for handler functions
+ *
+ *  ```
+ *  const helloHandler = handler((req) => new Response("Hello World"))
+ *  ```
+ */
 export function handler(h: Handler): Handler {
   return h;
 }
 
-/** Catch errors occuring in a particular handler */
+/** Catch errors occuring in a particular handler
+ * ```ts
+ *  import {
+ *         deserve,
+ *         errorBoundary
+ *     } from "https://deno.land/x/deserve/mod.ts"
+ *
+ *     const app = deserve({
+ *         handlers: [
+ *             errorBoundary(
+ *                 (req) => {
+ *                     funcThatThrows();
+ *                     return new Response("Unreachable.!")
+ *                 },
+ *                 // A function that handles the error
+ *                 (req, err) => {
+ *                   console.error(err)
+ *                   return new Response("Oh oh an Error Occured", {
+ *                       status: 500
+ *                   })
+ *               }
+ *           )
+ *       ]
+ *   })
+ * ```
+ */
 export function errorBoundary(
   handler: Handler,
   onError: (
@@ -30,7 +60,7 @@ export function errorBoundary(
 }
 
 /** A function that takes many handlers and returns a handler that
- * executes all the input handlers until a handler returns a valid response object
+ * executes the input handlers in order until a handler returns a valid response object
  */
 export function many(...handlers: Handler[]): Handler {
   return async (request) => {
@@ -56,7 +86,9 @@ export function when(
   };
 }
 
-/** Executes the handler only when the request method matches the input method */
+/** Executes the handler only when the request method matches the input method
+ * this is a verbose function, please use get, post, put, patch etc
+ */
 export function method(method: Method, ...handlers: Handler[]): Handler {
   return when(
     (r) => r.method.toLowerCase() === method.toLowerCase(),
@@ -90,7 +122,30 @@ export function file(
   );
 }
 
-/** A handler that serves static files in a directory */
+/** A handler that serves static files in a directory
+ * ```ts
+ *  import {
+ *        deserve,
+ *        // Import the static handler
+ *        staticHandler,
+ *    } from "https://deno.land/x/deserve/mod.ts"
+ *
+ *    const app = deserve({
+ *        handlers: [
+ *            staticHandler(
+ *                // Root Directory to serve. Defaults to "public"
+ *                "public",
+ *                // A flag to turn serving index.html when visiting root directory. Defaults to True
+ *                true,
+ *            ),
+ *        ]
+ *    })
+ *
+ *    app.listen({
+ *        port: 8000,
+ *    })
+ * ```
+ */
 export function staticHandler(fsRoot = "public", serveIndex = true): Handler {
   return errorBoundary(
     async (req) => {
