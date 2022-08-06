@@ -185,3 +185,39 @@ export function useURL(req: Request): URL {
 
   return urlCache.get(req)!;
 }
+
+export type ContextGetter<T> = () => T;
+export type ContextSetter<T> = (data: T | ((prev: T) => T)) => T;
+
+export function createContext<T>(initialData: T) {
+  const id = Math.random().toString(36).slice(2);
+
+  let initial = true;
+  return function useContext(
+    req: Request
+  ): [ContextGetter<T>, ContextSetter<T>] {
+    // deno-lint-ignore no-explicit-any
+    const r = req as any;
+    r["__context__"] ??= {};
+
+    if (initial) {
+      r["__context__"][id] = initialData;
+      initial = false;
+    }
+
+    function get() {
+      return r["__context__"][id] as T;
+    }
+
+    function set(data: T | ((prev: T) => T)) {
+      if (typeof data === "function") {
+        data = (data as (p: T) => T)(r["__context__"][id]);
+      }
+
+      r["__context__"][id] = data;
+      return get();
+    }
+
+    return [get, set];
+  };
+}

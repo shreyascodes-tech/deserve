@@ -1,8 +1,13 @@
-import { match } from "https://esm.sh/path-to-regexp@6.2.1";
+import { match, MatchFunction } from "https://esm.sh/path-to-regexp@6.2.1";
 import { joinURL } from "https://esm.sh/ufo";
 
 import { Handler } from "./types.ts";
-import { method, useURL, many } from "./utils.ts";
+import { method, useURL, many, createContext } from "./utils.ts";
+
+const useRouterContext = createContext({
+  path: "",
+  params: {} as Record<string, string>,
+});
 
 /**
  * Extracts URL query params from the request
@@ -22,9 +27,9 @@ import { method, useURL, many } from "./utils.ts";
  * ```
  */
 export function useParams<T extends Record<string, string>>(req: Request) {
-  // deno-lint-ignore no-explicit-any
-  const { __params__: params } = req as unknown as any;
-  return params as T;
+  const [routerCtx] = useRouterContext(req);
+
+  return routerCtx().params as T;
 }
 
 /**
@@ -55,18 +60,47 @@ export function useParams<T extends Record<string, string>>(req: Request) {
  *  }) // deserve
  * ```
  */
-export function route(path: string, ...handlers: Handler[]): Handler {
-  const matcher = match(path);
+export function route(path: string, ...handlers: Handler[]): Handler;
+export function route(
+  opts: { path: string; exact?: boolean },
+  ...handlers: Handler[]
+): Handler;
+export function route(
+  pathOrOpts: string | { path: string; exact?: boolean },
+  ...handlers: Handler[]
+): Handler {
+  if (typeof pathOrOpts === "string") {
+    pathOrOpts = {
+      path: pathOrOpts,
+      exact: true,
+    };
+  }
+
+  const { path, exact } = pathOrOpts as { path: string; exact?: boolean };
+
   const handler = many(...handlers);
+  // deno-lint-ignore ban-types
+  let matcher: MatchFunction<object>;
   return (req) => {
+    const [, setRouterCtx] = useRouterContext(req);
     const { pathname } = useURL(req);
-    const match = matcher(pathname);
-    if (!match) return;
-    const { params } = match;
-    Object.defineProperty(req, "__params__", {
-      value: params,
-      writable: false,
+
+    const { path: newPath } = setRouterCtx((data) => {
+      return {
+        ...data,
+        path: joinURL(data?.path ?? "", path),
+      };
     });
+
+    matcher ??= match(newPath, { end: exact });
+    const matchData = matcher(pathname);
+    if (!matchData) return;
+    const { params } = matchData;
+
+    setRouterCtx((data) => ({
+      ...data,
+      params: params as Record<string, string>,
+    }));
     return handler(req);
   };
 }
@@ -118,7 +152,7 @@ export function post(...handlers: Handler[]): Handler;
 export function post(path: string, ...handlers: Handler[]): Handler;
 export function post(path: string | Handler, ...handlers: Handler[]): Handler {
   if (typeof path === "string") return method("post", route(path, ...handlers));
-  return method("post", ...handlers);
+  return method("post", path, ...handlers);
 }
 
 /**
@@ -143,7 +177,7 @@ export function put(...handlers: Handler[]): Handler;
 export function put(path: string, ...handlers: Handler[]): Handler;
 export function put(path: string | Handler, ...handlers: Handler[]): Handler {
   if (typeof path === "string") return method("put", route(path, ...handlers));
-  return method("put", ...handlers);
+  return method("put", path, ...handlers);
 }
 
 /**
@@ -169,7 +203,7 @@ export function patch(path: string, ...handlers: Handler[]): Handler;
 export function patch(path: string | Handler, ...handlers: Handler[]): Handler {
   if (typeof path === "string")
     return method("patch", route(path, ...handlers));
-  return method("patch", ...handlers);
+  return method("patch", path, ...handlers);
 }
 
 /**
@@ -195,7 +229,7 @@ export function del(path: string, ...handlers: Handler[]): Handler;
 export function del(path: string | Handler, ...handlers: Handler[]): Handler {
   if (typeof path === "string")
     return method("delete", route(path, ...handlers));
-  return method("delete", ...handlers);
+  return method("delete", path, ...handlers);
 }
 
 /**
@@ -224,7 +258,7 @@ export function options(
 ): Handler {
   if (typeof path === "string")
     return method("options", route(path, ...handlers));
-  return method("options", ...handlers);
+  return method("options", path, ...handlers);
 }
 
 /**
@@ -249,35 +283,32 @@ export function head(...handlers: Handler[]): Handler;
 export function head(path: string, ...handlers: Handler[]): Handler;
 export function head(path: string | Handler, ...handlers: Handler[]): Handler {
   if (typeof path === "string") return method("head", route(path, ...handlers));
-  return method("head", ...handlers);
+  return method("head", path, ...handlers);
 }
 
 /**
- * Group multiple handlers and routes under a single base path
+ * Creates a new router that takes multiple route handlers
  *
  * ```ts
  *  import { deserve, group, get post } from "https://deno.land/x/deserve/mod.ts"
  *
  *  const app = deserve({
  *    handlers: [
- *      // Only runs the handlers under the api path
- *      group("/api", (p) => [
- *        // Only runs the handlers under the api/auth path
- *        // {p} is a funtion that joins the pathwith the previous groups base path
- *        group(p("/auth"), (req) => [
- *          get(p("/me"), () => new Response("User Details (/api/auth/me)"))
- *          post(p("/login"), () => new Response("Login (/api/auth/login)"))
- *          post(p("/register"), () => new Response("Login (/api/auth/register)"))
- *        ])
- *      ])
+ *      router(
+ *        // Only runs the handlers under the api path
+ *        "/api",
+ *        router(
+ *          // Only runs the handlers under the api/auth path
+ *          "/auth",
+ *          get("/me", () => new Response("User Details (/api/auth/me)"))
+ *          post("/login", () => new Response("Login (/api/auth/login)"))
+ *          post("/register", () => new Response("Login (/api/auth/register)"))
+ *        )
+ *      )
  *    ]
  *  })
  * ```
  */
-export function group(
-  prefix: string,
-  handlers: (p: (path: string) => string) => Handler[]
-): Handler {
-  const p = (path: string) => joinURL(prefix, path);
-  return many(...handlers(p));
+export function router(prefix: string, ...handlers: Handler[]): Handler {
+  return route({ path: prefix, exact: false }, ...handlers);
 }
