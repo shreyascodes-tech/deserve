@@ -10,7 +10,7 @@ export type {
   RouteHandler,
   RouteParameters,
 } from "./types/core.ts";
-export type { Router } from "./types/router.ts";
+export type { AppRouter } from "./types/router.ts";
 export * from "./types/static.ts";
 
 /**

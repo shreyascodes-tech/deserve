@@ -1,11 +1,11 @@
 // deno-lint-ignore-file no-explicit-any ban-types
 import { Handler, Method, Route, RouteHandler } from "./types.ts";
 import { joinURL } from "./internal.ts";
-import { Router, routesMapSymbol } from "./types/router.ts";
+import { AppRouter, routesMapSymbol } from "./types/router.ts";
 
 export function createRouter<CtxExtensions = {}>(
   prefix = ""
-): Router<CtxExtensions> {
+): AppRouter<CtxExtensions> {
   const _routes = new Map<Method, Route[]>();
 
   function addRoutes(
