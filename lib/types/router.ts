@@ -1,6 +1,12 @@
-import { DeserveApp, Handler, Method, Route, RouteHandler } from "./core.ts";
+import { ParamsDictionary } from "../types.ts";
+import { DeserveApp, Handler, Method, RouteHandler } from "./core.ts";
 
 export const routesMapSymbol = Symbol();
+
+export interface Route<T = ParamsDictionary> {
+  pattern: URLPattern;
+  handler: Handler<T>;
+}
 
 export interface Router<CtxExtensions> {
   [routesMapSymbol]: Map<Method, Route[]>;

@@ -1,13 +1,7 @@
 // deno-lint-ignore-file no-explicit-any ban-types
-import {
-  DeserveApp,
-  Handler,
-  Method,
-  Route,
-  RouteHandler,
-} from "./types/core.ts";
+import { DeserveApp, Handler, Method, RouteHandler } from "./types/core.ts";
 import { joinURL } from "./internal.ts";
-import { AppRouter, routesMapSymbol } from "./types/router.ts";
+import { AppRouter, Route, routesMapSymbol } from "./types/router.ts";
 
 export function createRouter<App extends DeserveApp = DeserveApp<{}>>(
   prefix = ""

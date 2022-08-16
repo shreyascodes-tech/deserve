@@ -101,8 +101,3 @@ export type Method =
   | "HEAD"
   | "TRACE"
   | "ALL";
-
-export interface Route<T = ParamsDictionary> {
-  pattern: URLPattern;
-  handler: Handler<T>;
-}

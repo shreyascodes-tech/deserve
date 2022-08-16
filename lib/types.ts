@@ -6,7 +6,6 @@ export type {
   Method,
   ParamsDictionary,
   //   PromiseOr, // This is Internal
-  Route,
   RouteHandler,
   RouteParameters,
 } from "./types/core.ts";
