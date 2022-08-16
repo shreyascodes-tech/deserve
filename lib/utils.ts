@@ -79,8 +79,10 @@ export function errorBoundary(
   return async (req, ctx) => {
     let res: Response | undefined;
     try {
+      // deno-lint-ignore no-explicit-any
       res = (await handler(req, ctx)) as any;
     } catch (error) {
+      // deno-lint-ignore no-explicit-any
       res = (await onError(req, error)) as any;
     }
     return res;

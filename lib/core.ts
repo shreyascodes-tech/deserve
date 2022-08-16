@@ -4,7 +4,7 @@ import {
   serve,
   ServeInit,
 } from "https://deno.land/std@0.151.0/http/server.ts";
-import { withLeadingSlash } from "https://esm.sh/ufo";
+import { getMatch, setMatch } from "./internal.ts";
 import {
   DeserveApp,
   Context,
@@ -23,20 +23,6 @@ import {
 export function createApp<T = {}>(): DeserveApp<T> {
   const _handlers: Handler[] = [];
   const _hooks: Hook[] = [];
-
-  // deno-lint-ignore ban-types
-  function setMatch(pathname: string, o: object) {
-    Reflect.set(
-      o,
-      "__path_pattern__",
-      new URLPattern({ pathname: withLeadingSlash(pathname) })
-    );
-  }
-
-  // deno-lint-ignore ban-types
-  function getMatch(o: object): URLPattern | null {
-    return Reflect.get(o, "__path_pattern__");
-  }
 
   const handler = async function serveHandler(req: Request, conn: ConnInfo) {
     const { method, url } = req;
