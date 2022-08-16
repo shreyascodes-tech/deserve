@@ -32,13 +32,14 @@ export function createLogger(): Hook {
     preHandler() {
       start = Date.now();
     },
-    postHandler(req) {
+    postHandler(req, ctx) {
       const { pathname } = new URL(req.url);
       const time = Date.now() - start;
+      const status = ctx.response?.status;
       console.log(
-        `${brightGreen(req.method)} | ${brightYellow(pathname)} - ${brightBlue(
-          `${time}ms`
-        )}`
+        `${brightGreen(req.method)} | ${brightMagenta(
+          status?.toString() ?? ""
+        )} | ${brightYellow(pathname)} - ${brightBlue(`${time}ms`)}`
       );
     },
   };

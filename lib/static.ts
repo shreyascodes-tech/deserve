@@ -1,6 +1,6 @@
 import { serveFile } from "https://deno.land/std@0.151.0/http/file_server.ts";
 import { join, normalize } from "https://deno.land/std@0.151.0/path/posix.ts";
-import { Context, Handler, PromiseOr } from "./types.ts";
+import { Context, Handler, ParamsDictionary, PromiseOr } from "./types.ts";
 
 /** Algorithm used to determine etag */
 export type EtagAlgorithm =
@@ -126,7 +126,10 @@ async function serveDirIndex(
   }
 }
 
-export function serveStatic<T>(opts: ServeStaticOptions = {}): Handler<T> {
+// deno-lint-ignore ban-types
+export function serveStatic<Params = ParamsDictionary, CtxExtensions = {}>(
+  opts: ServeStaticOptions = {}
+): Handler<Params, CtxExtensions> {
   opts.serveIndex ??= true;
 
   const target = opts?.fsRoot || ".";

@@ -1,3 +1,4 @@
+// deno-lint-ignore-file ban-types
 import {
   ConnInfo,
   ServeInit,
@@ -5,18 +6,18 @@ import {
 
 export type PromiseOr<T> = T | Promise<T>;
 
-type ParamsDictionary = Record<string, string>;
+export type ParamsDictionary = Record<string, string>;
 
-export type Context<Params = ParamsDictionary> = {
+export type Context<Params = ParamsDictionary, Extensions = {}> = {
   conn: ConnInfo;
   pattern?: URLPattern;
   match?: URLPatternResult;
   params?: Params;
-};
+} & Extensions;
 
-export type Handler<Params = ParamsDictionary> = (
+export type Handler<Params = ParamsDictionary, CtxExtensions = {}> = (
   req: Request,
-  ctx: Context<Params>
+  ctx: Context<Params, CtxExtensions>
 ) => PromiseOr<Response | void>;
 
 type RemoveTail<
@@ -52,23 +53,40 @@ export type RouteParameters<Route extends string> = string extends Route
         : unknown)
   : ParamsDictionary;
 
-export type RouteHandler<Route extends string = string> = Handler<
-  RouteParameters<Route>
->;
+export type RouteHandler<
+  Route extends string = string,
+  CtxExtensions = {}
+> = Handler<RouteParameters<Route>, CtxExtensions>;
 
-export type Hook<R extends string = string> = {
-  preHandler?: RouteHandler<R>;
-  postHandler?: RouteHandler<R>;
+export type Hook<R extends string = string, CtxExtensions = {}> = {
+  preHandler?: RouteHandler<R, CtxExtensions>;
+  postHandler?: RouteHandler<
+    R,
+    CtxExtensions & { response: Response | undefined }
+  >;
 };
 
-export type DeserveApp = {
-  hook(...hooks: Hook[]): DeserveApp;
-  hook<R extends string = string>(path: R, ...hooks: Hook<R>[]): DeserveApp;
-  use(...handlers: Handler[]): DeserveApp;
-  use<R extends string = string>(
+export type DeserveApp<CtxExtensions = {}> = {
+  hook<NewExtensions extends CtxExtensions = CtxExtensions>(
+    ...hooks: Hook<string, CtxExtensions>[]
+  ): DeserveApp<NewExtensions>;
+  hook<
+    R extends string = string,
+    NewExtensions extends CtxExtensions = CtxExtensions
+  >(
     path: R,
-    ...handlers: RouteHandler<R>[]
-  ): DeserveApp;
+    ...hooks: Hook<R, CtxExtensions>[]
+  ): DeserveApp<NewExtensions>;
+  use<NewExtensions extends CtxExtensions = CtxExtensions>(
+    ...handlers: Handler<ParamsDictionary, CtxExtensions>[]
+  ): DeserveApp<NewExtensions>;
+  use<
+    R extends string = string,
+    NewExtensions extends CtxExtensions = CtxExtensions
+  >(
+    path: R,
+    ...handlers: RouteHandler<R, CtxExtensions>[]
+  ): DeserveApp<NewExtensions>;
   listen(init?: ServeInit): Promise<void>;
 };
 

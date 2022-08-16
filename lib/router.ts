@@ -1,94 +1,137 @@
-// deno-lint-ignore-file no-explicit-any
-import { Handler, Method, Route, RouteHandler } from "./types.ts";
+// deno-lint-ignore-file no-explicit-any ban-types
+import { DeserveApp, Handler, Method, Route, RouteHandler } from "./types.ts";
 import { joinURL } from "https://esm.sh/ufo";
 
 const routesMapSymbol = Symbol();
 
-export type Router = {
-  [routesMapSymbol]: Map<string, Route[]>;
-  all<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  get<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  post<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  put<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  patch<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  delete<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  options<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  head<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  trace<R extends string>(path: R, handler: RouteHandler<R>): Router;
-  append(router: Router): Router;
+type InternalRouter<CtxExtensions> = {
+  [routesMapSymbol]: Map<Method, Route[]>;
+  all<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  get<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  post<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  put<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  patch<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  delete<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  options<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  head<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  trace<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  append(router: Router<any>): Router<CtxExtensions>;
   routes(): Handler;
 };
 
-export function createRouter(prefix = ""): Router {
+type GetCtxExts<T> = T extends DeserveApp<infer CtxExtensions>
+  ? CtxExtensions
+  : T;
+
+export type Router<T> = InternalRouter<GetCtxExts<T>>;
+
+export function createRouter<CtxExtensions = {}>(
+  prefix = ""
+): Router<CtxExtensions> {
   const _routes = new Map<Method, Route[]>();
 
-  function addRoute<T>(
+  function addRoutes(
     pattern: URLPattern,
-    handler: Handler<T>,
-    method: Method
+    method: Method,
+    ...handlers: Handler[]
   ) {
-    _routes.set(method, [{ pattern, handler } as any]);
+    for (const handler of handlers) {
+      const prev = _routes.has(method) ? _routes.get(method)! : [];
+      _routes.set(method, [...prev, { pattern, handler }]);
+    }
   }
 
-  function route<T>(path: string, handler: Handler<T>, method: Method) {
+  function route(
+    path: string,
+    method: Method,
+    handlers: RouteHandler<any, any>[]
+  ) {
     path = joinURL(prefix, path);
 
     const pattern = new URLPattern({ pathname: path });
 
-    if (!_routes.has(method)) {
-      addRoute(pattern, handler, method);
-    }
+    // if (!_routes.has(method)) {
+    //   addRoutes(pattern, method, handlers);
+    // }
 
-    const prev = _routes.get(method)!;
+    // const prev = _routes.get(method)!;
+    // _routes.set(method, [...prev, { pattern, handler } as any] as any);
 
-    _routes.set(method, [...prev, { pattern, handler } as any] as any);
+    addRoutes(pattern, method, ...handlers);
   }
   return {
     [routesMapSymbol]: _routes,
-    all<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "ALL");
-      return this;
+    all(path, ...handlers) {
+      route(path, "ALL", handlers);
+      return this as any;
     },
-    get<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "GET");
-      return this;
+    get(path, ...handlers) {
+      route(path, "GET", handlers);
+      return this as any;
     },
-    post<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "POST");
-      return this;
+    post(path, ...handlers) {
+      route(path, "POST", handlers);
+      return this as any;
     },
-    put<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "PUT");
-      return this;
+    put(path, ...handlers) {
+      route(path, "PUT", handlers);
+      return this as any;
     },
-    patch<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "PATCH");
-      return this;
+    patch(path, ...handlers) {
+      route(path, "PATCH", handlers);
+      return this as any;
     },
-    delete<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "DELETE");
-      return this;
+    delete(path, ...handlers) {
+      route(path, "DELETE", handlers);
+      return this as any;
     },
-    options<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "OPTIONS");
-      return this;
+    options(path, ...handlers) {
+      route(path, "OPTIONS", handlers);
+      return this as any;
     },
-    head<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "HEAD");
-      return this;
+    head(path, ...handlers) {
+      route(path, "HEAD", handlers);
+      return this as any;
     },
-    trace<R extends string>(path: R, handler: RouteHandler<R>) {
-      route(path, handler, "TRACE");
-      return this;
+    trace(path, ...handlers) {
+      route(path, "TRACE", handlers);
+      return this as any;
     },
     append(router) {
       const routes = router[routesMapSymbol];
       for (const [method, rs] of routes) {
         for (const { handler, pattern } of rs) {
-          addRoute(pattern, handler, method as Method);
+          addRoutes(pattern, method, handler);
         }
       }
-      return this;
+      return this as any;
     },
     routes() {
       return async function $routeHandler(req, ctx) {

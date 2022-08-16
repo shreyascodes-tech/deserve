@@ -4,11 +4,13 @@ import {
   createRouter,
   response,
   serveStatic,
-} from "./mod.ts";
+} from "../mod.ts";
 
-const app = createApp();
+const app = createApp<{
+  db: string;
+}>();
 
-const router = createRouter("/todos")
+const router = createRouter<typeof app>("/todos")
   .get("/", () => response("All Todos"))
   .get("/:id", (_, ctx) => {
     const id = ctx.params!.id;

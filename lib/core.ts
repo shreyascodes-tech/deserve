@@ -5,14 +5,22 @@ import {
   ServeInit,
 } from "https://deno.land/std@0.151.0/http/server.ts";
 import { withLeadingSlash } from "https://esm.sh/ufo";
-import { DeserveApp, Context, Handler, Hook, RouteHandler } from "./types.ts";
+import {
+  DeserveApp,
+  Context,
+  Handler,
+  Hook,
+  RouteHandler,
+  ParamsDictionary,
+} from "./types.ts";
 import {
   defaultErrorHandler,
   defaultOnListenHandler,
   response,
 } from "./utils.ts";
 
-export function createApp(): DeserveApp {
+// deno-lint-ignore ban-types
+export function createApp<T = {}>(): DeserveApp<T> {
   const _handlers: Handler[] = [];
   const _hooks: Hook[] = [];
 
@@ -42,9 +50,11 @@ export function createApp(): DeserveApp {
       const pattern = getMatch(hook);
 
       if (!pattern) {
-        const res = await hook.preHandler?.(req, ctx as any);
-        if (res) return res;
-        else continue;
+        const newRes = await hook.preHandler?.(req, ctx as any);
+        if (newRes) {
+          res = newRes;
+          break;
+        } else continue;
       }
 
       if (pattern && !pattern.test(url)) continue;
@@ -58,12 +68,14 @@ export function createApp(): DeserveApp {
       ctx.match = match;
       ctx.params = params;
 
-      const res = await hook.preHandler?.(req, ctx as any);
-      if (res) return res;
+      const newRes = await hook.preHandler?.(req, ctx as any);
+      if (newRes) res = newRes;
     }
 
     // Execute Handlers
     for (const handler of _handlers) {
+      if (res) break;
+
       const pattern = getMatch(handler);
 
       if (!pattern) {
@@ -84,8 +96,12 @@ export function createApp(): DeserveApp {
       ctx.params = params;
 
       res = await handler(req, ctx);
+    }
 
-      if (res) break;
+    if (!res) {
+      res = response(`Cannot ${method} ${pathname}`, {
+        status: 404,
+      });
     }
 
     // Execute Post Hooks
@@ -93,9 +109,11 @@ export function createApp(): DeserveApp {
       const pattern = getMatch(hook);
 
       if (!pattern) {
-        const endRes = await hook.postHandler?.(req, { conn });
-        if (endRes) return endRes;
-        if (res) return res;
+        const newRes: Response | void = await hook.postHandler?.(req, {
+          ...ctx,
+          response: res as any,
+        });
+        if (newRes) res = newRes;
         continue;
       }
 
@@ -110,13 +128,18 @@ export function createApp(): DeserveApp {
       ctx.match = match;
       ctx.params = params;
 
-      const endRes = await hook.postHandler?.(req, ctx as any);
-      if (endRes) return endRes;
-      if (res) return res;
+      const newRes: Response | void = await hook.postHandler?.(req, {
+        ...ctx,
+        response: res as any,
+      });
+      if (newRes) res = newRes;
     }
+
     if (res) return res;
 
-    return response(`Cannot ${method} ${pathname}`);
+    return response(`Cannot ${method} ${pathname}`, {
+      status: 404,
+    });
   };
 
   return {
@@ -135,15 +158,15 @@ export function createApp(): DeserveApp {
     },
 
     use<R extends string = string>(
-      pathOrHandler: R | Handler,
-      ...handlers: RouteHandler<R>[]
+      pathOrHandler: R | Handler<ParamsDictionary, T>,
+      ...handlers: RouteHandler<R, T>[]
     ) {
       if (typeof pathOrHandler === "string") {
         for (const handler of handlers) {
           setMatch(pathOrHandler, handler);
         }
       } else {
-        _handlers.push(pathOrHandler);
+        _handlers.push(pathOrHandler as any);
       }
 
       for (const handler of handlers) {
