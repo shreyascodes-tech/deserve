@@ -1,11 +1,17 @@
 // deno-lint-ignore-file no-explicit-any ban-types
-import { Handler, Method, Route, RouteHandler } from "./types.ts";
+import {
+  DeserveApp,
+  Handler,
+  Method,
+  Route,
+  RouteHandler,
+} from "./types/core.ts";
 import { joinURL } from "./internal.ts";
 import { AppRouter, routesMapSymbol } from "./types/router.ts";
 
-export function createRouter<CtxExtensions = {}>(
+export function createRouter<App extends DeserveApp = DeserveApp<{}>>(
   prefix = ""
-): AppRouter<CtxExtensions> {
+): AppRouter<App> {
   const _routes = new Map<Method, Route[]>();
 
   function addRoutes(
@@ -27,13 +33,6 @@ export function createRouter<CtxExtensions = {}>(
     path = joinURL(prefix, path);
 
     const pattern = new URLPattern({ pathname: path });
-
-    // if (!_routes.has(method)) {
-    //   addRoutes(pattern, method, handlers);
-    // }
-
-    // const prev = _routes.get(method)!;
-    // _routes.set(method, [...prev, { pattern, handler } as any] as any);
 
     addRoutes(pattern, method, ...handlers);
   }

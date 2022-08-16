@@ -58,15 +58,15 @@ export type RouteHandler<
   CtxExtensions = {}
 > = Handler<RouteParameters<Route>, CtxExtensions>;
 
-export type Hook<R extends string = string, CtxExtensions = {}> = {
+export interface Hook<R extends string = string, CtxExtensions = {}> {
   preHandler?: RouteHandler<R, CtxExtensions>;
   postHandler?: RouteHandler<
     R,
     CtxExtensions & { response: Response | undefined }
   >;
-};
+}
 
-export type DeserveApp<CtxExtensions = {}> = {
+export interface DeserveApp<CtxExtensions = {}> {
   hook<NewExtensions extends CtxExtensions = CtxExtensions>(
     ...hooks: Hook<string, CtxExtensions>[]
   ): DeserveApp<NewExtensions>;
@@ -87,22 +87,20 @@ export type DeserveApp<CtxExtensions = {}> = {
     path: R,
     ...handlers: RouteHandler<R, CtxExtensions>[]
   ): DeserveApp<NewExtensions>;
+
   listen(init?: ServeInit): Promise<void>;
-};
+}
 
-const http_methods = [
-  "GET",
-  "POST",
-  "PUT",
-  "PATCH",
-  "DELETE",
-  "OPTIONS",
-  "HEAD",
-  "TRACE",
-  "ALL",
-] as const;
-
-export type Method = typeof http_methods[number];
+export type Method =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE"
+  | "OPTIONS"
+  | "HEAD"
+  | "TRACE"
+  | "ALL";
 
 export interface Route<T = ParamsDictionary> {
   pattern: URLPattern;

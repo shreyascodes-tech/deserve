@@ -9,15 +9,15 @@ export type EtagAlgorithm =
   | "sha-512";
 
 /** Interface for serveFile options. */
-export type SendFileOptions = {
+export interface SendFileOptions {
   /** The algorithm to use for generating the ETag. Defaults to "fnv1a". */
   etagAlgorithm?: EtagAlgorithm;
   /** An optional FileInfo object returned by Deno.stat. It is used for optimization purposes. */
   fileInfo?: Deno.FileInfo;
-};
+}
 
 /** Interface for serveDir options. */
-export type ServeStaticOptions = {
+export interface ServeStaticOptions {
   /** Serves the files under the given directory root. Defaults to your current directory. */
   fsRoot?: string;
   /** Enable Serving index.html on base route. Defaults to true. */
@@ -30,4 +30,4 @@ export type ServeStaticOptions = {
     ctx: Context,
     err: unknown
   ) => PromiseOr<Response | void>;
-};
+}

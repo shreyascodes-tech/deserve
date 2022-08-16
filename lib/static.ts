@@ -5,12 +5,8 @@ import {
   serveDirIndex,
   verifyAndSanitizeUrlRoot,
 } from "./internal.ts";
-import {
-  Handler,
-  ParamsDictionary,
-  SendFileOptions,
-  ServeStaticOptions,
-} from "./types.ts";
+import { Handler, ParamsDictionary } from "./types/core.ts";
+import { SendFileOptions, ServeStaticOptions } from "./types/static.ts";
 
 /**
  * Returns an HTTP Response with the requested file as the body.

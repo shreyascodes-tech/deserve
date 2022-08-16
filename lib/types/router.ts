@@ -2,7 +2,7 @@ import { DeserveApp, Handler, Method, Route, RouteHandler } from "./core.ts";
 
 export const routesMapSymbol = Symbol();
 
-type Router<CtxExtensions> = {
+export interface Router<CtxExtensions> {
   [routesMapSymbol]: Map<Method, Route[]>;
   all<R extends string>(
     path: R,
@@ -42,7 +42,7 @@ type Router<CtxExtensions> = {
   ): Router<CtxExtensions>;
   append<T>(router: Router<T>): Router<CtxExtensions>;
   routes(): Handler;
-};
+}
 
 type GetCtxExts<T> = T extends DeserveApp<infer CtxExtensions>
   ? CtxExtensions

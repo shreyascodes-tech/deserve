@@ -6,7 +6,7 @@ import {
   brightYellow,
   magenta,
 } from "https://deno.land/std@0.151.0/fmt/colors.ts";
-import { Handler, Hook, PromiseOr } from "./types.ts";
+import { Handler, Hook, PromiseOr } from "./types/core.ts";
 
 export function defaultOnListenHandler(params: {
   hostname: string;

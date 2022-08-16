@@ -12,7 +12,7 @@ import {
   Hook,
   RouteHandler,
   ParamsDictionary,
-} from "./types.ts";
+} from "./types/core.ts";
 import {
   defaultErrorHandler,
   defaultOnListenHandler,
