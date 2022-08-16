@@ -6,7 +6,7 @@ import {
   brightYellow,
   magenta,
 } from "https://deno.land/std@0.151.0/fmt/colors.ts";
-import { Hook } from "./types.ts";
+import { Handler, Hook, PromiseOr } from "./types.ts";
 
 export function defaultOnListenHandler(params: {
   hostname: string;
@@ -50,4 +50,39 @@ export function response(
   init?: ResponseInit | undefined
 ) {
   return new Response(body, init);
+}
+
+/** Catch errors occuring in a particular handler
+ * ```ts
+ *  errorBoundary(
+ *        (req) => {
+ *            funcThatThrows();
+ *            return response("Unreachable.!")
+ *        },
+ *        // A function that handles the error
+ *        (req, err) => {
+ *          console.error(err)
+ *          return response("Oh oh an Error Occured", {
+ *              status: 500
+ *          })
+ *      }
+ *  )
+ * ```
+ */
+export function errorBoundary(
+  handler: Handler,
+  onError: (
+    req: Request,
+    err: unknown
+  ) => PromiseOr<Response | null | undefined | void>
+): Handler {
+  return async (req, ctx) => {
+    let res: Response | undefined;
+    try {
+      res = (await handler(req, ctx)) as any;
+    } catch (error) {
+      res = (await onError(req, error)) as any;
+    }
+    return res;
+  };
 }
