@@ -34,7 +34,7 @@ export function Layout({ children }: { children: any }) {
               <li>
                 <a
                   class="px-8 rounded-t-md outline-none py-3 bg-transparent hover:bg-[#00000044] focus:bg-[#00000044] border-transparent hover:border-white focus:border-white transition-colors duration-150 hover:border-b-2 focus:border-b-2"
-                  href="https://github.com/shreyassanthu77/deserve"
+                  href="https://github.com/shreyascodes-tech/deserve"
                 >
                   Github
                 </a>
