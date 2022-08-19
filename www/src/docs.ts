@@ -45,7 +45,7 @@ export async function loadDocs(dev = false) {
 }
 
 if (import.meta.main) {
-  const docs = await loadDocs();
+  const docs = await loadDocs(true);
   const json = JSON.stringify(Object.fromEntries(docs.entries()), null, 2);
 
   await Deno.writeTextFile("./www/docs.gen.json", json);
