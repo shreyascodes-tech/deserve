@@ -18,7 +18,7 @@ const app = createApp(createContext);
 
 const router = createRouter<typeof app>("/");
 
-router.get("/", (_, ctx) => ctx.render(<Home />));
+router.get("/", (_, ctx) => ctx.render(<Home />, { title: "Deserve" }));
 
 // Dev Reload Route
 {
@@ -32,7 +32,9 @@ router.get("/", (_, ctx) => ctx.render(<Home />));
   }
 }
 
-router.get("/docs{/}?", (_, ctx) => ctx.render(<DocsHome />));
+router.get("/docs{/}?", (_, ctx) =>
+  ctx.render(<DocsHome />, { title: "Deserve Docs" })
+);
 
 router.get("/docs/:filename+{/}?", (_, ctx) => {
   const { filename } = ctx.params!;
