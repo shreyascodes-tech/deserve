@@ -25,7 +25,7 @@ export function defaultErrorHandler(error: unknown) {
   return new Response("Internal Server Error", { status: 500 });
 }
 
-export function createLogger(): Hook {
+export function createLogger(filterPaths?: string[]): Hook {
   let start: number;
 
   return {
@@ -34,6 +34,9 @@ export function createLogger(): Hook {
     },
     postHandler(req, ctx) {
       const { pathname } = new URL(req.url);
+
+      if (filterPaths?.includes(pathname)) return;
+
       const time = Date.now() - start;
       const status = ctx.response?.status;
       console.log(

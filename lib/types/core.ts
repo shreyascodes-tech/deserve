@@ -13,6 +13,7 @@ export type Context<Params = ParamsDictionary, Extensions = {}> = {
   pattern?: URLPattern;
   match?: URLPatternResult;
   params?: Params;
+  redirect(path: string, status?: number | undefined): Response;
 } & Extensions;
 
 export type Handler<Params = ParamsDictionary, CtxExtensions = {}> = (
@@ -67,26 +68,18 @@ export interface Hook<R extends string = string, CtxExtensions = {}> {
 }
 
 export interface DeserveApp<CtxExtensions = {}> {
-  hook<NewExtensions extends CtxExtensions = CtxExtensions>(
-    ...hooks: Hook<string, CtxExtensions>[]
-  ): DeserveApp<NewExtensions>;
-  hook<
-    R extends string = string,
-    NewExtensions extends CtxExtensions = CtxExtensions
-  >(
+  hook(...hooks: Hook<string, CtxExtensions>[]): DeserveApp<CtxExtensions>;
+  hook<R extends string = string>(
     path: R,
     ...hooks: Hook<R, CtxExtensions>[]
-  ): DeserveApp<NewExtensions>;
-  use<NewExtensions extends CtxExtensions = CtxExtensions>(
+  ): DeserveApp<CtxExtensions>;
+  use(
     ...handlers: Handler<ParamsDictionary, CtxExtensions>[]
-  ): DeserveApp<NewExtensions>;
-  use<
-    R extends string = string,
-    NewExtensions extends CtxExtensions = CtxExtensions
-  >(
+  ): DeserveApp<CtxExtensions>;
+  use<R extends string = string>(
     path: R,
     ...handlers: RouteHandler<R, CtxExtensions>[]
-  ): DeserveApp<NewExtensions>;
+  ): DeserveApp<CtxExtensions>;
 
   listen(init?: ServeInit): Promise<void>;
 }

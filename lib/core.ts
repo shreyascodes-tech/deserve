@@ -4,7 +4,7 @@ import {
   serve,
   ServeInit,
 } from "https://deno.land/std@0.151.0/http/server.ts";
-import { getMatch, setMatch } from "./internal.ts";
+import { getMatch, setMatch, withLeadingSlash } from "./internal.ts";
 import {
   DeserveApp,
   Context,
@@ -12,6 +12,7 @@ import {
   Hook,
   RouteHandler,
   ParamsDictionary,
+  PromiseOr,
 } from "./types/core.ts";
 import {
   defaultErrorHandler,
@@ -20,7 +21,9 @@ import {
 } from "./utils.ts";
 
 // deno-lint-ignore ban-types
-export function createApp<T = {}>(): DeserveApp<T> {
+export function createApp<T = {}>(
+  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<T>
+): DeserveApp<T> {
   const _handlers: Handler[] = [];
   const _hooks: Hook[] = [];
 
@@ -29,7 +32,18 @@ export function createApp<T = {}>(): DeserveApp<T> {
     const { pathname } = new URL(url);
 
     let res: Response | void;
-    const ctx: Context = { conn };
+
+    const ctxExt = (await createContext?.(req, conn)) ?? {};
+
+    const ctx: Context = {
+      conn,
+      redirect(path, status) {
+        const url = new URL(req.url);
+        url.pathname = withLeadingSlash(path);
+        return Response.redirect(url, status);
+      },
+      ...ctxExt,
+    };
 
     // Execute Pre Hooks
     for (const hook of _hooks) {
