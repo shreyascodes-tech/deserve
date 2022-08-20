@@ -46,11 +46,11 @@ function Header({ hasSidebar = false }) {
         >
           <img
             src="/logo_wide.png"
-            class="h-[65px] object-contain"
+            class="h-10 md:h-[65px] object-contain"
             alt="Deserve Home"
           />
         </a>
-        <ul class="flex md:text-lg items-center max-w-full overflow-x-scroll">
+        <ul class="flex text-sm md:text-lg items-center max-w-full overflow-x-scroll">
           {hasSidebar && (
             <li>
               <button
