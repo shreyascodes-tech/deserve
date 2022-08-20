@@ -17,7 +17,7 @@ export interface LayOutProps {
 }
 
 const links: ([string, string] | [string, VNode, string])[] = [
-  ["/", "Home"],
+  // ["/", "Home"],
   ["/docs", "Docs"],
   ["https://doc.deno.land/https://deno.land/x/deserve/mod.ts", "API Reference"],
   [

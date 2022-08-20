@@ -59,7 +59,7 @@ app.use((request) => {
 ```
 
 Here the first handler logs the url of every incoming request
-and because it doesb't return a response the next handler will be called
+and because it doesn't return a response the next handler will be called
 and in the above example the second handler returns a response so the execution
 ends and Hello World is returned
 
@@ -84,6 +84,6 @@ app.listen({
 ```
 
 Here the first handler logs the url of every incoming request
-and because it doesb't return a response the next handler will be called
+and because it doesn't return a response the next handler will be called
 and in the above example the second handler returns a response so the execution
 ends and Hello World is returned
