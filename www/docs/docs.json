@@ -1,0 +1,9 @@
+{
+  "quick-start": {
+    "title": "Quick Start"
+  },
+  "app": {
+    "title": "Application",
+    "pages": [["create-app", "createApp"]]
+  }
+}

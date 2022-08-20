@@ -8,6 +8,8 @@ import docsJSON from "../docs.gen.json" assert { type: "json" };
 
 export interface DocAttributes {
   title: string;
+  next?: [string, string];
+  prev?: [string, string];
 }
 
 export interface DocFile {

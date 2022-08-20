@@ -1,12 +1,28 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
-// deno-lint-ignore no-explicit-any
-export function Layout({ children }: { children: any }) {
+import {
+  h,
+  Fragment,
+  ComponentProps,
+  ComponentType,
+  ComponentChildren,
+  VNode,
+} from "https://deno.land/x/htm@0.0.10/mod.tsx";
+
+export interface LayOutProps {
+  // deno-lint-ignore ban-types
+  sideBar?: VNode<{}>;
+  children: ComponentChildren;
+}
+
+export function Layout({
+  children,
+  sideBar,
+}: ComponentProps<ComponentType<LayOutProps>>) {
   return (
     <>
-      <main class="w-full min-h-screen text-white bg-[#111827]">
-        <header class="bg-[#1f2937] py-2 mb-3 shadow sticky top-0 z-50">
+      <main class="w-full h-screen overflow-y-hidden text-white bg-[#111827]">
+        <header class="bg-[#1f2937] py-2 shadow">
           <div class="container flex flex-col items-center justify-between mx-auto md:flex-row">
             <a
               class="outline-none px-6 py-3 bg-transparent hover:bg-[#00000044] focus:bg-[#00000044] rounded-sm transition-colors duration-150"
@@ -42,7 +58,20 @@ export function Layout({ children }: { children: any }) {
             </ul>
           </div>
         </header>
-        <div class="container max-w-[1000px] px-4 mx-auto">{children}</div>
+        <div class="w-full h-full overflow-y-auto">
+          <div
+            class={`container ${sideBar ? "flex gap-x-6" : ""} max-w-[${
+              sideBar ? 1400 : 1000
+            }px] px-4 mx-auto`}
+          >
+            {sideBar && (
+              <aside class="h-full pt-3 sticky top-0 w-[260px] hidden md:block">
+                {sideBar}
+              </aside>
+            )}
+            <div class="w-full">{children}</div>
+          </div>
+        </div>
       </main>
     </>
   );

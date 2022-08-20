@@ -54,11 +54,8 @@ export async function createContext() {
           ...(dev ? [devScript] : []),
           ...(scripts ? scripts : []),
         ],
-        styles: [
-          `body { height: 100vh; overflow-y: auto }`,
-          ...(styles ? styles : []),
-        ],
-        body: <Layout>{body}</Layout>,
+        styles: [`body { height: 100vh }`, ...(styles ? styles : [])],
+        body,
         ...opts,
       });
     },
