@@ -31,9 +31,9 @@ class Renderer extends marked.Renderer {
       return `<pre><code>${htmlEscape(code)}</code></pre>`;
     }
     const html = Prism.highlight(code, grammar, language!);
-    return `<div data-copy-code="${btoa(
+    return `<div class="${codeClasses} highlight highlight-source-${language}"><pre class="${codePreClasses}">${html}</pre> <button data-copy-code="${btoa(
       code
-    )}" class="${codeClasses} highlight highlight-source-${language}"><pre class="${codePreClasses}">${html}</pre> <button class="${copyBtnClasses}" title="copy code to clipboard" id="copy-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    )}" class="${copyBtnClasses}" title="copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
   </svg></button></div>`;
   }
@@ -50,7 +50,7 @@ marked.setOptions({
   renderer: new Renderer(),
 });
 
-const codeScript = `addEventListener("DOMContentLoaded",()=>{let e=document.querySelectorAll("[data-copy-code]");for(let o of e){let t=atob(o.dataset.copyCode);o.querySelector("#copy-btn").addEventListener("click",()=>{navigator.clipboard.writeText(t)})}});`;
+const codeScript = `(()=>{addEventListener("DOMContentLoaded",()=>{let e=document.querySelectorAll("[data-copy-code]");for(let t of e){let o=atob(t?.dataset?.copyCode);t.addEventListener("click",()=>{navigator.clipboard.writeText(o)})}});})();`;
 
 const codeClassesList = (codeClasses + copyBtnClasses + codePreClasses).split(
   " "
