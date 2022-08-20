@@ -51,7 +51,7 @@ function Header({ hasSidebar = false }) {
             alt="Deserve Home"
           />
         </a>
-        <ul class="flex text-sm md:text-lg items-center max-w-full overflow-x-scroll">
+        <ul class="flex text-sm md:text-lg items-center max-w-full overflow-x-auto">
           {hasSidebar && (
             <li>
               <button
