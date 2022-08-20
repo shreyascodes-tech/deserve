@@ -31,7 +31,7 @@ function ListItem({
   return (
     <li>
       <ul class="px-4">
-        <li className="block py-2">{title}</li>
+        <li className="block py-2 font-black">{title}</li>
         {pages.map(([pagePath, title]) => (
           <ListItem path={joinURL(path, pagePath)} entry={{ title }} />
         ))}
