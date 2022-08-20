@@ -8,6 +8,7 @@ import {
   ComponentChildren,
   VNode,
 } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { dev } from "../main.tsx";
 
 export interface LayOutProps {
   // deno-lint-ignore ban-types
@@ -142,7 +143,12 @@ export function Layout({
           </div>
         </div>
       </main>
-      {sideBar && <script src="/sidebar.min.js"></script>}
+      {sideBar &&
+        (dev ? (
+          <script src="/sidebar.js"></script>
+        ) : (
+          <script src="/sidebar.min.js"></script>
+        ))}
     </>
   );
 }
