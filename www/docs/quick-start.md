@@ -1,5 +1,11 @@
 ---
 title: Quick Start
+prev:
+    - "/docs"
+    - "Documentation"
+next:
+    - "/docs/app/create-app"
+    - "createApp"
 ---
 
 # Deserve Quick Start
@@ -8,7 +14,7 @@ title: Quick Start
 
 ```ts
 // main.ts
-import { createApp, createRouter, response } from "https://deno.land/x/deserve@v0.2.2/mod.ts";
+import { createApp, createRouter, response } from "https://deno.land/x/deserve/mod.ts";
 ```
 
 ### Create App
@@ -58,7 +64,7 @@ deno run --allow-net main.ts
 
 ### Complete Example
 ```ts
-import { createApp, createRouter, response } from "https://deno.land/x/deserve@v0.2.2/mod.ts";
+import { createApp, createRouter, response } from "https://deno.land/x/deserve/mod.ts";
 
 // Create App
 const app = createApp()

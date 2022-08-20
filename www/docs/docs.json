@@ -1,9 +1,11 @@
 {
-  "quick-start": {
-    "title": "Quick Start"
-  },
-  "app": {
-    "title": "Application",
-    "pages": [["create-app", "createApp"]]
+  "Documentation": {
+    "quick-start": {
+      "title": "Quick Start"
+    },
+    "app": {
+      "title": "Application",
+      "pages": [["create-app", "createApp"]]
+    }
   }
 }

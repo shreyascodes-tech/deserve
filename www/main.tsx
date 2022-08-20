@@ -33,7 +33,9 @@ router.get("/", (_, ctx) => ctx.render(<Home />, { title: "Deserve" }));
 }
 
 router.get("/docs{/}?", (_, ctx) =>
-  ctx.render(<DocsHome />, { title: "Deserve Docs" })
+  ctx.render(<DocsHome />, {
+    title: "Deserve Docs",
+  })
 );
 
 router.get("/docs/:filename+{/}?", (_, ctx) => {
@@ -51,7 +53,6 @@ router.get("/docs/:filename+{/}?", (_, ctx) => {
         href: "https://esm.sh/prismjs@1.27.0/themes/prism-okaidia.min.css",
       },
     ],
-
     scripts: [codeScript],
   });
 });

@@ -40,9 +40,9 @@ class Renderer extends marked.Renderer {
 
   link(href: string, title: string, text: string) {
     if (href.startsWith("#")) {
-      return `<a href="${href}" title="${title}">${text}</a>`;
+      return `<a class="text-sky-400" href="${href}" title="${title}">${text}</a>`;
     }
-    return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+    return `<a class="text-sky-400" href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
   }
 }
 

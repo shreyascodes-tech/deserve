@@ -19,7 +19,7 @@ export function Prose({
 >) {
   return (
     <div
-      class={`text-lg pb-[12rem] prose prose-neutral prose-invert max-w-full ${
+      class={`text-lg prose prose-neutral prose-invert max-w-full ${
         " " + clss ?? ""
       }`}
       {...rest}

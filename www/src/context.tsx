@@ -30,7 +30,7 @@ export async function createContext() {
           // @ts-ignore ..
           presetTypography({}),
         ],
-        safelist: [...codeClassesList],
+        safelist: [...codeClassesList, "text-sky-400"],
       })
     );
 
@@ -54,7 +54,10 @@ export async function createContext() {
           ...(dev ? [devScript] : []),
           ...(scripts ? scripts : []),
         ],
-        styles: [`body { height: 100vh }`, ...(styles ? styles : [])],
+        styles: [
+          `* { -webkit-tap-highlight-color: transparent; } body { height: 100vh; }`,
+          ...(styles ? styles : []),
+        ],
         body,
         ...opts,
       });
