@@ -20,7 +20,7 @@ function ListItem({
     return (
       <li>
         <a
-          class="block px-4 py-2 rounded transition-colors hover:bg-white/25 focus:bg-white/25 md:hover:bg-black/25 md:focus:bg-black/25 active:bg-white/25 md:active:bg-vlack/25"
+          class="block px-4 py-2 rounded transition-colors hover:bg-white/25 focus:bg-white/25 active:bg-white/25"
           href={path}
         >
           {title}

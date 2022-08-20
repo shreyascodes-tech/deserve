@@ -39,23 +39,23 @@ const links: ([string, string] | [string, VNode, string])[] = [
 
 function Header({ hasSidebar = false }) {
   return (
-    <header class="bg-[#1f2937] py-2 shadow">
+    <header class="bg-[#1f2937] py-2 border-b-1 border-white/20 text-white">
       <div class="container flex flex-col items-center justify-between mx-auto md:flex-row">
         <a
-          class="outline-none px-6 py-3 bg-transparent hover:bg-black/25 focus:bg-black/25 rounded-sm transition-colors"
+          class="outline-none px-6 py-3 bg-transparent hover:bg-white/25 focus:bg-white/25 rounded-sm transition-colors"
           href="/"
         >
           <img
             src="/logo_wide.png"
-            class="h-10 md:h-[65px] object-contain"
+            class="h-10 object-contain"
             alt="Deserve Home"
           />
         </a>
-        <ul class="flex text-sm md:text-lg items-center max-w-full overflow-x-auto">
+        <ul class="flex text-sm items-center max-w-full overflow-x-auto">
           {hasSidebar && (
             <li>
               <button
-                class="block md:hidden px-6 py-2 bg-transparent hover:bg-black/25 focus:bg-black/25 active:bg-black/25 transition-colors rounded-full"
+                class="block md:hidden px-6 py-2 bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors rounded-full"
                 type="button"
                 title="Open Menu"
                 data-sidebar-toggle
@@ -80,7 +80,7 @@ function Header({ hasSidebar = false }) {
           {links.map(([path, child, title]) => (
             <li>
               <a
-                class={`block px-6 py-2 text-center bg-transparent hover:bg-black/25 focus:bg-black/25 active:bg-black/25 transition-colors ${
+                class={`block px-6 py-2 text-center bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors ${
                   typeof child === "string" ? "rounded-md" : "rounded-full"
                 }`}
                 title={title}
@@ -102,47 +102,47 @@ export function Layout({
 }: ComponentProps<ComponentType<LayOutProps>>) {
   return (
     <>
-      <main class="w-full h-screen flex flex-col overflow-y-hidden text-white bg-[#111827]">
-        <Header hasSidebar={!!sideBar} />
-        <div class="w-full h-full overflow-y-auto">
-          <div
-            class={`container ${sideBar ? "flex gap-x-6" : ""} max-w-[${
-              sideBar ? 1400 : 1000
-            }px] px-4 mx-auto`}
-          >
-            {sideBar && (
-              <aside
-                id="sidebar"
-                class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/70 z-50 p-12 pt-[4rem] md:h-min md:sticky md:inset-auto md:top-0 md:bg-transparent md:p-0 md:pt-3 md:w-[260px] md:opacity-100 md:pointer-events-auto"
+      <Header hasSidebar={!!sideBar} />
+      <div class="w-full h-full md:h-full text-white overflow-y-auto bg-[#111827]">
+        <div
+          class={`container ${sideBar ? "flex gap-x-6" : ""} max-w-[${
+            sideBar ? 1400 : 1000
+          }px] px-4 mx-auto`}
+        >
+          {sideBar && (
+            <aside
+              id="sidebar"
+              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/70 z-200 md:z-10 p-12 pt-[4rem] md:h-min md:sticky md:inset-auto md:top-0 md:bg-transparent md:p-0 md:pt-3 md:w-[260px] md:opacity-100 md:pointer-events-auto"
+            >
+              <button
+                data-sidebar-toggle
+                class="md:hidden absolute right-10 top-12 p-2 rounded-full border-1 border-neutral-300 color-neutral-300"
+                type="button"
+                title="Close Menu"
               >
-                <button
-                  data-sidebar-toggle
-                  class="md:hidden absolute right-10 top-12 p-2 rounded-full border-1 border-neutral-300 color-neutral-300"
-                  type="button"
-                  title="Close Menu"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-                {sideBar}
-              </aside>
-            )}
-            <div class="w-full">{children}</div>
-          </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              {sideBar}
+            </aside>
+          )}
+          <main class="w-full md:border-l-2 md:border-white/10 pl-6">
+            {children}
+          </main>
         </div>
-      </main>
+      </div>
       {sideBar &&
         (dev ? (
           <script src="/sidebar.js"></script>

@@ -55,7 +55,7 @@ export async function createContext() {
           ...(scripts ? scripts : []),
         ],
         styles: [
-          `* { -webkit-tap-highlight-color: transparent; } body { height: 100vh; }`,
+          `* { -webkit-tap-highlight-color: transparent; } body { height: 100vh; display: flex; flex-direction: column; }`,
           ...(styles ? styles : []),
         ],
         body,
