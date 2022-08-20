@@ -82,8 +82,3 @@ app.listen({
     port: 8080
 })
 ```
-
-Here the first handler logs the url of every incoming request
-and because it doesn't return a response the next handler will be called
-and in the above example the second handler returns a response so the execution
-ends and Hello World is returned
