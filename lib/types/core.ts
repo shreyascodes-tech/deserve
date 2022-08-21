@@ -13,6 +13,7 @@ export type Context<Params = ParamsDictionary, Extensions = {}> = {
   pattern?: URLPattern;
   match?: URLPatternResult;
   params?: Params;
+  headers: Headers;
   redirect(path: string, status?: number | undefined): Response;
 } & Extensions;
 
