@@ -1,9 +1,8 @@
 /** @jsx h */
-/** @jsxFrag Fragment */
-import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { h } from "https://deno.land/x/htm@0.0.10/mod.tsx";
 import { Layout } from "../components/Layout.tsx";
-import { Prose } from "../components/Prose.tsx";
 
+// deno-lint-ignore no-explicit-any
 const Tick = ({ children: text }: { children: any }) => (
   <p class="flex flex-col sm:flex-row items-center text-xl">
     <span class="p-1 mr-4 text-emerald-200 rounded-full bg-emerald-200/20">
@@ -37,22 +36,20 @@ export function Home() {
           <span className="text-emerald-400">Simple</span>,{" "}
           <span className="text-amber-400">Fast</span>,{" "}
           <span class="text-sky-300">Light weight</span> and{" "}
-          <span class="text-fuchsia-400">reloable</span>
+          <span class="text-fuchsia-400">reliable</span>
         </p>
       </div>
       <div className="mt-3 flex flex-col gap-8 sm:flex-row sm:flex-wrap text-center sm:text-justify sm:justify-center">
         <Tick>Easy to use ✅</Tick>
         <Tick>TypeScript support out of the box 🚀</Tick>
-        <Tick>Blazingly fast 🔥</Tick>
+        <Tick>Blazingly Fast 🔥</Tick>
         <Tick>Built on web standards ✨</Tick>
-        <Tick>Super extinsible 🛠️</Tick>
+        <Tick>Super extensible 🛠️</Tick>
         <Tick>
           Deno Deploy Support
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class=" ml-2 w-7 h-7"
-            // width="252"
-            // height="252"
             viewBox="0 0 252 252"
             fill="none"
           >
@@ -107,12 +104,11 @@ export function Home() {
 
       <div class="mt-12 flex justify-center">
         <a
-          class="text-emerald-400 border-2 
-          border-emerald-400 
-          outline-none
+          class="px-4 py-2 rounded outline-none transition-colors
+          border-2 text-emerald-400 border-emerald-400
           hover:text-white hover:bg-emerald-600 hover:border-emerald-600
           focus:text-white focus:bg-emerald-600 focus:border-emerald-600
-          active:text-white active:bg-emerald-700 active:border-emerald-700 transition-colors px-4 py-2 rounded"
+          active:text-white active:bg-emerald-700 active:border-emerald-700"
           href="/docs"
         >
           Get Started

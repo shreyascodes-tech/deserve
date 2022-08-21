@@ -32,9 +32,9 @@ Handlers are the building blocks of your server, these are similar to
 (but <u>***NOT***</u> the same) as middleware, if you are familiar
 with middleware based frameworks
 
-Handler is basically a function that takes in [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) as an arguement
+Handler is basically a function that takes in [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) as an argument
 and can return a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) to fulfill the request or return nothing
-to continue to the next registerd handler
+to continue to the next registered handler
 
 use the **use** method on the app object to register handlers
 

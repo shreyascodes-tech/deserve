@@ -12,16 +12,24 @@ export function DocsHome() {
         <h2>Quick Start</h2>
         <p>Get started with deserve in a few minutes</p>
         <a
+          class="px-4 py-2 rounded outline-none transition-colors no-underline
+          border-2 text-emerald-400 border-emerald-400
+          hover:text-white hover:bg-emerald-600 hover:border-emerald-600
+          focus:text-white focus:bg-emerald-600 focus:border-emerald-600
+          active:text-white active:bg-emerald-700 active:border-emerald-700"
           href="/docs/quick-start"
-          class="block max-w-max px-4 py-2 rounded bg-sky-600 no-underline"
         >
           Get Started
         </a>
         <h2>API Reference</h2>
         <p>Dive Deep Into the types and functions of the library</p>
         <a
+          class="px-4 py-2 rounded outline-none transition-colors no-underline
+          border-2 text-emerald-400 border-emerald-400
+          hover:text-white hover:bg-emerald-600 hover:border-emerald-600
+          focus:text-white focus:bg-emerald-600 focus:border-emerald-600
+          active:text-white active:bg-emerald-700 active:border-emerald-700"
           href="https://doc.deno.land/https://deno.land/x/deserve/mod.ts"
-          class="block max-w-max px-4 py-2 rounded border-2 border-text-sky-600 text-sky-600 no-underline"
         >
           API Reference
         </a>
