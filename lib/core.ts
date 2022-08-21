@@ -37,6 +37,7 @@ export function createApp<T = {}>(
 
     const ctx: Context = {
       conn,
+      headers: new Headers(),
       redirect(path, status) {
         const url = new URL(req.url);
         url.pathname = withLeadingSlash(path);
@@ -135,10 +136,16 @@ export function createApp<T = {}>(
       if (newRes) res = newRes;
     }
 
-    if (res) return res;
+    const resHeaders = new Headers(res?.headers);
+
+    if (res) {
+      resHeaders.forEach((val, k) => res!.headers.append(k, val));
+      return res;
+    }
 
     return response(`Cannot ${method} ${pathname}`, {
       status: 404,
+      headers: resHeaders,
     });
   };
 
