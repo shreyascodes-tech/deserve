@@ -26,8 +26,8 @@ function ListItem({
         <a
           class={`block px-4 py-2 rounded transition-colors ${
             active
-              ? "bg-white/10"
-              : "hover:bg-white/25 focus:bg-white/25 active:bg-white/25"
+              ? "bg-white/20"
+              : "hover:bg-white/30 focus:bg-white/30 active:bg-white/30"
           }`}
           href={active ? undefined : path}
         >
