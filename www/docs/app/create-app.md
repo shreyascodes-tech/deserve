@@ -1,5 +1,9 @@
 ---
 title: The createApp Function
+
+prev:
+    - "/docs/quick-start"
+    - "Quick Start"
 ---
 
 # The *createApp* Function

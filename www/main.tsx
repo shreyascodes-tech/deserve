@@ -18,7 +18,26 @@ const app = createApp(createContext);
 
 const router = createRouter<typeof app>("/");
 
-router.get("/", (_, ctx) => ctx.render(<Home />, { title: "Deserve" }));
+router.get("/", (_, ctx) =>
+  ctx.render(<Home />, {
+    title: "Deserve",
+    links: [
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap",
+      },
+    ],
+    styles: [".rubik { font-family: 'Rubik Moonrocks', cursive; }"],
+  })
+);
 
 // Dev Reload Route
 {

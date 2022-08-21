@@ -70,6 +70,7 @@ function configureCredentials(options: CorsOptions, ctx: Context) {
 }
 
 function configureMethods(options: CorsOptions, ctx: Context) {
+  // deno-lint-ignore no-explicit-any
   let methods = options.methods as any;
   if (methods?.join) {
     methods = methods.join(","); // .methods is an array, so turn it into a string

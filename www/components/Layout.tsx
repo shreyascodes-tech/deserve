@@ -105,9 +105,9 @@ export function Layout({
       <Header hasSidebar={!!sideBar} />
       <div class="w-full h-full md:h-full text-white overflow-y-auto bg-[#111827]">
         <div
-          class={`container ${sideBar ? "flex gap-x-6" : ""} max-w-[${
-            sideBar ? 1400 : 1000
-          }px] px-4 mx-auto`}
+          class={`container min-h-full ${
+            sideBar ? "flex gap-x-6" : ""
+          } max-w-[${sideBar ? 1400 : 1000}px] px-4 mx-auto`}
         >
           {sideBar && (
             <aside
@@ -140,8 +140,8 @@ export function Layout({
           )}
           <main
             class={`w-full ${
-              sideBar ? "md:border-l-2 md:border-white/10" : ""
-            } pl-6`}
+              sideBar ? "md:border-l-2 pl-6 md:border-white/10" : ""
+            }`}
           >
             {children}
           </main>
