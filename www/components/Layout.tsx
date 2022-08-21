@@ -138,7 +138,11 @@ export function Layout({
               {sideBar}
             </aside>
           )}
-          <main class="w-full md:border-l-2 md:border-white/10 pl-6">
+          <main
+            class={`w-full ${
+              sideBar ? "md:border-l-2 md:border-white/10" : ""
+            } pl-6`}
+          >
             {children}
           </main>
         </div>
