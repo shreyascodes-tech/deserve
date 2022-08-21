@@ -7,6 +7,7 @@ import type { DocAttributes, DocFile } from "../src/docs.ts";
 
 export interface DocsProps {
   file: DocFile;
+  path: string;
 }
 
 function PaginatedLink({
@@ -77,9 +78,9 @@ function Pagination({
   );
 }
 
-export function Docs({ file: { html, attributes } }: DocsProps) {
+export function Docs({ file: { html, attributes }, path }: DocsProps) {
   return (
-    <Layout sideBar={<SideBar />}>
+    <Layout sideBar={<SideBar path={path} />}>
       <Prose html={html} />
       <Pagination attributes={attributes} />
     </Layout>

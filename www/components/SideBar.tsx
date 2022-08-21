@@ -1,7 +1,7 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
 import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
-import { joinURL } from "../../lib/internal.ts";
+import { joinURL, withTrailingSlash } from "../../lib/internal.ts";
 import docs from "../docs/docs.json" assert { type: "json" };
 
 interface Entry {
@@ -12,35 +12,47 @@ interface Entry {
 function ListItem({
   entry: { title, pages },
   path,
+  currentPath,
 }: {
   path: string;
+  currentPath: string;
   entry: Entry;
 }) {
-  if (!pages)
+  if (!pages) {
+    const active = withTrailingSlash(path) === withTrailingSlash(currentPath);
+
     return (
       <li>
         <a
-          class="block px-4 py-2 rounded transition-colors hover:bg-white/25 focus:bg-white/25 active:bg-white/25"
-          href={path}
+          class={`block px-4 py-2 rounded transition-colors ${
+            active
+              ? "bg-white/10"
+              : "hover:bg-white/25 focus:bg-white/25 active:bg-white/25"
+          }`}
+          href={active ? undefined : path}
         >
           {title}
         </a>
       </li>
     );
-
+  }
   return (
     <li>
       <ul class="px-4">
         <li className="block py-2 font-black">{title}</li>
         {pages.map(([pagePath, title]) => (
-          <ListItem path={joinURL(path, pagePath)} entry={{ title }} />
+          <ListItem
+            currentPath={currentPath}
+            path={joinURL(path, pagePath)}
+            entry={{ title }}
+          />
         ))}
       </ul>
     </li>
   );
 }
 
-export default function SideBar() {
+export default function SideBar({ path: currentPage }: { path: string }) {
   const entries = Object.entries(docs["Documentation"]) as [string, Entry][];
 
   return (
@@ -48,7 +60,11 @@ export default function SideBar() {
       <strong class="text-lg">Documentation</strong>
       <ul class="mt-3">
         {entries.map(([path, entry]) => (
-          <ListItem path={joinURL("/docs", path)} entry={entry} />
+          <ListItem
+            currentPath={currentPage}
+            path={joinURL("/docs", path)}
+            entry={entry}
+          />
         ))}
       </ul>
     </>

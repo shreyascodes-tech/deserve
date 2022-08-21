@@ -5,7 +5,7 @@ prev:
     - "Documentation"
 next:
     - "/docs/app/create-app"
-    - "createApp"
+    - "Creating an app"
 ---
 
 # Deserve Quick Start

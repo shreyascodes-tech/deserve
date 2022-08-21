@@ -57,7 +57,7 @@ router.get("/docs{/}?", (_, ctx) =>
   })
 );
 
-router.get("/docs/:filename+{/}?", (_, ctx) => {
+router.get("/docs/:filename+{/}?", (req, ctx) => {
   const { filename } = ctx.params!;
 
   const exists = ctx.docsMap.has(filename);
@@ -65,7 +65,7 @@ router.get("/docs/:filename+{/}?", (_, ctx) => {
 
   const docFile: DocFile = ctx.docsMap.get(filename)!;
 
-  return ctx.render(<Docs file={docFile} />, {
+  return ctx.render(<Docs path={new URL(req.url).pathname} file={docFile} />, {
     title: docFile.attributes.title,
     styles: [
       {

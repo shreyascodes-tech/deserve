@@ -5,7 +5,15 @@
     },
     "app": {
       "title": "Application",
-      "pages": [["create-app", "Creating an App"]]
+      "pages": [
+        ["create-app", "Creating an App"],
+        ["handler", "Handler"],
+        ["context", "The Context Object"]
+      ]
+    },
+    "router": {
+      "title": "Router",
+      "pages": [["create-router", "Creating a Router"]]
     }
   }
 }

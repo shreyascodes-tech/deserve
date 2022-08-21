@@ -6,7 +6,7 @@ import { Prose } from "../components/Prose.tsx";
 import SideBar from "../components/SideBar.tsx";
 export function DocsHome() {
   return (
-    <Layout sideBar={<SideBar />}>
+    <Layout sideBar={<SideBar path="/docs" />}>
       <Prose>
         <h1>Documentation</h1>
         <h2>Quick Start</h2>

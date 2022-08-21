@@ -45,8 +45,6 @@ export async function createContext() {
       body: VNode<{}>,
       { scripts, styles, ...opts }: Partial<HTMLOPts> = {}
     ) {
-      console.log(styles);
-
       return html({
         lang: "en",
         scripts: [
