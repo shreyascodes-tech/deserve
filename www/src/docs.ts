@@ -1,10 +1,9 @@
 import { expandGlob } from "https://deno.land/std@0.152.0/fs/mod.ts";
 import { relative } from "https://deno.land/std@0.152.0/path/mod.ts";
 
-import { marked } from "./marked.ts";
-import frontMatter from "https://esm.sh/front-matter@4.0.2";
-
 import docsJSON from "../docs.gen.json" assert { type: "json" };
+
+import { renderMd } from "../../utils/md/mod.ts";
 
 export interface DocAttributes {
   title: string;
@@ -17,7 +16,7 @@ export interface DocFile {
   html: string;
 }
 
-const genDocsMap = new Map<string, DocFile>(Object.entries(docsJSON));
+const genDocsMap = new Map<string, DocFile>(Object.entries(docsJSON) as any);
 
 export async function loadDocs(dev = false) {
   if (!dev) {
@@ -36,9 +35,11 @@ export async function loadDocs(dev = false) {
 
     const contents = await Deno.readTextFile(path);
 
-    const { body, attributes } = frontMatter<DocAttributes>(contents);
+    // const { body, attributes } = frontMatter<DocAttributes>(contents);
 
-    const html = marked.parse(body);
+    // const html = marked.parse(body);
+
+    const { html, attributes } = renderMd<DocAttributes>(contents);
 
     filesMap.set(rel, { attributes, html });
   }

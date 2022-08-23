@@ -10,7 +10,7 @@ import { Home } from "./pages/Home.tsx";
 import { Docs } from "./pages/Docs.tsx";
 import { DocsHome } from "./pages/DocsHome.tsx";
 import { DocFile } from "./src/docs.ts";
-import { codeScript } from "./src/marked.ts";
+import { css, script } from "../utils/md/mod.ts";
 
 const port = dev ? 3333 : 80;
 
@@ -67,12 +67,8 @@ router.get("/docs/:filename+{/}?", (req, ctx) => {
 
   return ctx.render(<Docs path={new URL(req.url).pathname} file={docFile} />, {
     title: docFile.attributes.title,
-    styles: [
-      {
-        href: "https://esm.sh/prismjs@1.27.0/themes/prism-okaidia.min.css",
-      },
-    ],
-    scripts: [codeScript],
+    styles: [css],
+    scripts: [script],
   });
 });
 

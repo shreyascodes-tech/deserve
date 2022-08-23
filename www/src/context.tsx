@@ -9,10 +9,8 @@ import { UnoCSS } from "https://deno.land/x/htm@0.0.10/plugins.ts";
 import { presetUno } from "https://esm.sh/@unocss/preset-uno@0.45.7";
 import { presetTypography } from "https://esm.sh/@unocss/preset-typography@0.45.7";
 
-import { Layout } from "../components/Layout.tsx";
 import { dev } from "../main.tsx";
 import { DocFile, loadDocs } from "./docs.ts";
-import { codeClassesList } from "./marked.ts";
 
 const devScript = `addEventListener('DOMContentLoaded', (event) => setInterval(() => fetch("/reload").then(r => r.json()).then(({ reload }) => reload && location.reload()), 500));`;
 
@@ -30,7 +28,7 @@ export async function createContext() {
           // @ts-ignore ..
           presetTypography({}),
         ],
-        safelist: [...codeClassesList, "text-sky-400"],
+        safelist: [],
       })
     );
 
