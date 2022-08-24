@@ -119,7 +119,7 @@ function configureExposedHeaders(options: CorsOptions, ctx: Context) {
   }
 }
 
-export function cors(options: CorsOptions): Handler {
+export function cors(options: CorsOptions = {}): Handler {
   if (options) {
     options = {
       ...options,
