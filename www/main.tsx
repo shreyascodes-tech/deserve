@@ -1,6 +1,13 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { h, VNode, createJsx, Head, JSXOptions } from "../utils/jsx/mod.ts";
+import {
+  h,
+  Fragment,
+  VNode,
+  createJsx,
+  Head,
+  JSXOptions,
+} from "../utils/jsx/mod.ts";
 
 import { UnoGenerator } from "https://esm.sh/@unocss/core@0.45.7";
 import { presetUno } from "https://esm.sh/@unocss/preset-uno@0.45.7";
@@ -125,13 +132,18 @@ router.get("/docs/:filename+{/}?", (req, ctx) => {
 
   const docFile: DocFile = ctx.docsMap.get(filename)!;
 
-  return ctx.render(<Docs path={new URL(req.url).pathname} file={docFile} />, {
-    head: Head({
-      title: docFile.attributes.title,
-      styles: [css],
-      scripts: [script],
-    }),
-  });
+  return ctx.render(
+    <>
+      <Docs path={new URL(req.url).pathname} file={docFile} />
+      <script dangerouslySetInnerHTML={{ __html: script }}></script>
+    </>,
+    {
+      head: Head({
+        title: docFile.attributes.title,
+        styles: [css],
+      }),
+    }
+  );
 });
 
 app
