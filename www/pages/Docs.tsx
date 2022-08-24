@@ -3,7 +3,7 @@ import { h } from "https://deno.land/x/htm@0.0.10/mod.tsx";
 import { Layout } from "../components/Layout.tsx";
 import { Prose } from "../components/Prose.tsx";
 import SideBar from "../components/SideBar.tsx";
-import type { DocAttributes, DocFile } from "../src/docs.ts";
+import type { DocAttributes, DocFile } from "../docs.ts";
 
 export interface DocsProps {
   file: DocFile;
