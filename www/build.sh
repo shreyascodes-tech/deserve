@@ -1,1 +1,2 @@
-deno run -A ./www/src/docs.ts
+#! /bin/bash
+deno run -A ./www/docs.ts

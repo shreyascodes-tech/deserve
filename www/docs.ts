@@ -1,5 +1,9 @@
 import { expandGlob } from "https://deno.land/std@0.152.0/fs/mod.ts";
 import { relative } from "https://deno.land/std@0.152.0/path/mod.ts";
+import {
+  brightGreen,
+  brightRed,
+} from "https://deno.land/std@0.152.0/fmt/colors.ts";
 
 import docsJSON from "./docs.gen.json" assert { type: "json" };
 
@@ -45,8 +49,14 @@ export async function loadDocs(dev = false) {
 }
 
 if (import.meta.main) {
-  const docs = await loadDocs(true);
-  const json = JSON.stringify(Object.fromEntries(docs.entries()), null, 2);
+  try {
+    const docs = await loadDocs(true);
+    const json = JSON.stringify(Object.fromEntries(docs.entries()), null, 2);
 
-  await Deno.writeTextFile("./www/docs.gen.json", json);
+    await Deno.writeTextFile("./www/docs.gen.json", json);
+    console.log(brightGreen("✅ Build Successful"));
+  } catch (error) {
+    console.error(brightRed("❌ Error: " + error.message));
+    console.error(error);
+  }
 }
