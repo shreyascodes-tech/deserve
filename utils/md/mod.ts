@@ -5,6 +5,7 @@ import "https://esm.sh/prismjs@1.27.0/components/prism-typescript?no-check";
 import "https://esm.sh/prismjs@1.27.0/components/prism-bash.min?no-check";
 import { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
 import frontMatter from "https://esm.sh/front-matter@4.0.2";
+import "./themes/okaida.ts";
 
 const codeClasses = "not-prose code-wrapper-22707402-bd3br";
 
