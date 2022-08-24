@@ -51,7 +51,7 @@ console.log(attributes); /// { title: "Hello" }
 and the copy button functionality if enabled
 
 ## Complete Example
-> **NOTE**: You can combine this with the [jsx](../jsx) module for better DX
+> **NOTE**: You can combine this with the [jsx](/docs/utils/jsx) module for better DX
 
 ```ts
 
