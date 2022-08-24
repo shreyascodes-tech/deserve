@@ -18,6 +18,7 @@
     "utils": {
       "title": "Utilities",
       "pages": [
+        ["jsx", "Using JSX"],
         ["markdown", "Rendering Markdown"]
       ]
     }
