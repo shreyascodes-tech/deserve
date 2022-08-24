@@ -15,6 +15,10 @@ export type Context<Params = ParamsDictionary, Extensions = {}> = {
   params?: Params;
   headers: Headers;
   redirect(path: string, status?: number | undefined): Response;
+  hasData(key: string | Symbol | number): boolean;
+  getData<T>(key: string | Symbol | number): T | undefined;
+  setData<T>(key: string | Symbol | number, data: T): void;
+  removeData(key: string | Symbol | number): boolean;
 } & Extensions;
 
 export type Handler<Params = ParamsDictionary, CtxExtensions = {}> = (

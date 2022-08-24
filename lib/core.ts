@@ -26,6 +26,7 @@ export function createApp<T = {}>(
 ): DeserveApp<T> {
   const _handlers: Handler[] = [];
   const _hooks: Hook[] = [];
+  const ctxData = new Map();
 
   const handler = async function serveHandler(req: Request, conn: ConnInfo) {
     const { method, url } = req;
@@ -35,9 +36,22 @@ export function createApp<T = {}>(
 
     const ctxExt = (await createContext?.(req, conn)) ?? {};
 
+    ctxData.clear();
     const ctx: Context = {
       conn,
       headers: new Headers(),
+      hasData(key) {
+        return ctxData.has(key);
+      },
+      getData(key) {
+        return ctxData.get(key);
+      },
+      setData(key, data) {
+        return ctxData.set(key, data);
+      },
+      removeData(key) {
+        return ctxData.delete(key);
+      },
       redirect(path, status) {
         const url = new URL(req.url);
         url.pathname = withLeadingSlash(path);
