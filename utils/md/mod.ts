@@ -47,9 +47,9 @@ class Renderer extends marked.Renderer {
 
   link(href: string, title: string, text: string) {
     if (href.startsWith("#")) {
-      return `<a class="dcf0381ef31" href="${href}" title="${title}">${text}</a>`;
+      return `<a style="color:rgb(56 189 248 / 1)" href="${href}" title="${title}">${text}</a>`;
     }
-    return `<a class="dcf0381ef31" href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+    return `<a style="color:rgb(56 189 248 / 1)" href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
   }
 }
 
