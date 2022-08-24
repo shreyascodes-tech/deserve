@@ -8,6 +8,8 @@ import {
 import docsJSON from "./docs.gen.json" assert { type: "json" };
 
 import { renderMd } from "../utils/md/mod.ts";
+import "https://esm.sh/prismjs@1.27.0/components/prism-jsx?no-check";
+import "https://esm.sh/prismjs@1.27.0/components/prism-tsx?no-check";
 
 export interface DocAttributes {
   title: string;

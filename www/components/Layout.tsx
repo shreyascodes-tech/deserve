@@ -111,7 +111,7 @@ export function Layout({
           {sideBar && (
             <aside
               id="sidebar"
-              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] md:h-min md:sticky md:inset-auto md:top-0 md:bg-transparent md:p-0 md:pt-3 md:w-[260px] md:opacity-100 md:pointer-events-auto"
+              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] md:h-min md:sticky md:inset-auto md:top-0 md:bg-transparent md:p-0 md:pt-3 md:w-[300px] md:opacity-100 md:pointer-events-auto"
             >
               <button
                 data-sidebar-toggle
