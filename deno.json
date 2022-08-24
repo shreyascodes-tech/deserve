@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "docs": "sh ./scripts/dev-docs",
+    "docs:serve": "sh ./scripts/docs",
+    "docs:build": "sh ./scripts/build-docs"
+  }
+}
