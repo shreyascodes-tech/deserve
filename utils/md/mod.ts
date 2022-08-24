@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { marked } from "https://esm.sh/marked@4.0.18";
 import Prism from "https://esm.sh/prismjs@1.27.0";
 import "https://esm.sh/prismjs@1.27.0/components/prism-typescript?no-check";
@@ -51,11 +52,25 @@ marked.setOptions({
 export { css } from "./css.ts";
 export const script = `(()=>{let e=document.querySelectorAll("[data-copy-code]");for(let t of e){let o=atob(t?.dataset?.copyCode);t.addEventListener("click",()=>{navigator.clipboard.writeText(o)})}})();`;
 
-// deno-lint-ignore no-explicit-any
-export function renderMd<Attrs = any>(md: string) {
+export function renderMd<Attrs = any, Fm extends boolean = true>(
+  md: string,
+  parseFrontMatter: Fm = true as any
+): Fm extends true
+  ? {
+      html: string;
+      attributes: Attrs;
+    }
+  : {
+      html: string;
+    } {
+  if (!parseFrontMatter) {
+    return {
+      html: '<div class=".md-e044334dc0">' + marked.parse(md) + "</div>",
+    } as any;
+  }
   const { body, attributes } = frontMatter<Attrs>(md);
 
   const html = '<div class=".md-e044334dc0">' + marked.parse(body) + "</div>";
 
-  return { html, attributes };
+  return { html, attributes } as any;
 }
