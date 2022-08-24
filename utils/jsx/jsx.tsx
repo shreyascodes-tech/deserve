@@ -80,7 +80,7 @@ export function renderJSX(body: VNode<{}>) {
   return renderToString(body);
 }
 
-function jsx(body: string, options: RenderJSXOptions = {}) {
+function generateHTML(body: string, options: RenderJSXOptions = {}) {
   const htmlOpts: h.JSX.HTMLAttributes<HTMLHtmlElement> = {
     lang: "en",
     ...(options.html ?? {}),
@@ -101,7 +101,7 @@ function jsx(body: string, options: RenderJSXOptions = {}) {
     </html>
   );
 
-  return html;
+  return "<!DOCTYPE html>" + html;
 }
 
 export interface CreateJSXOptions {
@@ -110,7 +110,7 @@ export interface CreateJSXOptions {
   transformHtml?(html: string): Promise<string>;
 }
 
-export function createJsx(createOptions: CreateJSXOptions) {
+export function createJsx(createOptions: CreateJSXOptions = {}) {
   return async function $jsx(body: VNode<{}>, options: JSXOptions = {}) {
     body = (await createOptions.transformBody?.(body)) ?? body;
 
@@ -119,7 +119,7 @@ export function createJsx(createOptions: CreateJSXOptions) {
     options =
       (await createOptions.transformOptions?.(bodyStr, options)) ?? options;
 
-    let html = jsx(bodyStr, options);
+    let html = generateHTML(bodyStr, options);
     html = (await createOptions.transformHtml?.(html)) ?? html;
 
     const headers = new Headers(options.headers);
@@ -132,3 +132,5 @@ export function createJsx(createOptions: CreateJSXOptions) {
     });
   };
 }
+
+export const jsx = createJsx();
