@@ -51,6 +51,7 @@ marked.setOptions({
 export { css } from "./css.ts";
 export const script = `(()=>{addEventListener("DOMContentLoaded",()=>{let e=document.querySelectorAll("[data-copy-code]");for(let t of e){let o=atob(t?.dataset?.copyCode);t.addEventListener("click",()=>{navigator.clipboard.writeText(o)})}});})();`;
 
+// deno-lint-ignore no-explicit-any
 export function renderMd<Attrs = any>(md: string) {
   const { body, attributes } = frontMatter<Attrs>(md);
 
