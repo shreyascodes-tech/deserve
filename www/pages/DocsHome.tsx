@@ -1,12 +1,16 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
 import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { Head } from "../../utils/jsx/mod.ts";
 import { Layout } from "../components/Layout.tsx";
 import { Prose } from "../components/Prose.tsx";
 import SideBar from "../components/SideBar.tsx";
 export function DocsHome() {
   return (
     <Layout sideBar={<SideBar path="/docs" />}>
+      <Head>
+        <title>Deserve Docs</title>
+      </Head>
       <Prose>
         <h1>Documentation</h1>
         <h2>Quick Start</h2>

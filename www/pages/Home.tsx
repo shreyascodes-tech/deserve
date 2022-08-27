@@ -1,5 +1,6 @@
 /** @jsx h */
 import { h } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { Head } from "../../utils/jsx/mod.ts";
 import { Layout } from "../components/Layout.tsx";
 
 // deno-lint-ignore no-explicit-any
@@ -24,6 +25,20 @@ const Tick = ({ children: text }: { children: any }) => (
 export function Home() {
   return (
     <Layout>
+      <Head>
+        <title>Deserve</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap"
+        />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: ".rubik { font-family: 'Rubik Moonrocks', cursive; }",
+          }}
+        />
+      </Head>
       <div class="h-[400px] flex flex-col justify-center items-center text-center gap-3">
         <h1 class="text-5xl leading-[4rem]">
           The <span class="rubik text-6xl text-[#7aced7]">De</span>

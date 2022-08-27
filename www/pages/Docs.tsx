@@ -1,9 +1,13 @@
 /** @jsx h */
-import { h } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+/** @jsxFrag Fragment */
+import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { Head } from "../../utils/jsx/mod.ts";
 import { Layout } from "../components/Layout.tsx";
 import { Prose } from "../components/Prose.tsx";
 import SideBar from "../components/SideBar.tsx";
 import type { DocAttributes, DocFile } from "../docs.ts";
+
+import { css, script } from "../../utils/md/mod.ts";
 
 export interface DocsProps {
   file: DocFile;
@@ -80,9 +84,16 @@ function Pagination({
 
 export function Docs({ file: { html, attributes }, path }: DocsProps) {
   return (
-    <Layout sideBar={<SideBar path={path} />}>
-      <Prose html={html} />
-      <Pagination attributes={attributes} />
-    </Layout>
+    <>
+      <Layout sideBar={<SideBar path={path} />}>
+        <Head>
+          <title>{attributes.title}</title>
+          <style dangerouslySetInnerHTML={{ __html: css }} />
+        </Head>
+        <Prose html={html} />
+        <Pagination attributes={attributes} />
+      </Layout>
+      <script dangerouslySetInnerHTML={{ __html: script }}></script>
+    </>
   );
 }
