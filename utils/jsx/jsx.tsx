@@ -65,7 +65,6 @@ export interface CreateJSXOptions {
   transformBody?(body: VNode<{}>): VNode;
   transformBodyStr?(body: string): string | Promise<string>;
   transformHeadStr?(head: string, body: string): string | Promise<string>;
-  transformOptions?(body: string, options?: JSXOptions): JSXOptions;
 }
 
 export function createJsx(createOptions: CreateJSXOptions = {}) {
