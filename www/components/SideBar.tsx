@@ -29,7 +29,7 @@ function ListItem({
               ? "bg-white/20"
               : "hover:bg-white/30 focus:bg-white/30 active:bg-white/30"
           }`}
-          href={active ? undefined : path}
+          href={path}
         >
           {title}
         </a>

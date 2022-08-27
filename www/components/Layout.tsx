@@ -54,7 +54,7 @@ function Header({ hasSidebar = false }) {
           {hasSidebar && (
             <li>
               <button
-                class="block md:hidden px-6 py-2 bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors rounded-full"
+                class="block lg:hidden px-6 py-2 bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors rounded-full"
                 type="button"
                 title="Open Menu"
                 data-sidebar-toggle
@@ -111,11 +111,11 @@ export function Layout({
           {sideBar && (
             <aside
               id="sidebar"
-              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] md:h-min md:sticky md:inset-auto md:top-0 md:bg-transparent md:p-0 md:pt-3 md:w-[300px] md:opacity-100 md:pointer-events-auto"
+              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] lg:h-min lg:sticky lg:inset-auto lg:top-0 lg:bg-transparent lg:p-0 lg:pt-3 lg:w-[300px] lg:opacity-100 lg:pointer-events-auto"
             >
               <button
                 data-sidebar-toggle
-                class="md:hidden absolute right-10 top-12 p-2 rounded-full border-1 border-neutral-300 color-neutral-300"
+                class="lg:hidden absolute right-10 top-12 p-2 rounded-full border-1 border-neutral-300 color-neutral-300"
                 type="button"
                 title="Close Menu"
               >
@@ -139,7 +139,7 @@ export function Layout({
           )}
           <main
             class={`w-full ${
-              sideBar ? "md:border-l-2 pl-6 md:border-white/10" : ""
+              sideBar ? "lg:border-l-2 pl-6 lg:border-white/10" : ""
             }`}
           >
             {children}

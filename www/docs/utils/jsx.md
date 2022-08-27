@@ -1,6 +1,11 @@
 ---
 title: Using JSX
-
+prev:
+    - "/docs/router/create-router"
+    -  "Creating a Router"
+next:
+    - "/docs/utils/markdown"
+    -  "Rendering Markdown"
 ---
 
 # Using JSX
