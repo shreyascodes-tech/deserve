@@ -1,3 +1,8 @@
+---
+title: Using JSX
+
+---
+
 # Using JSX
 This module can be used to render an html page using JSX
 
@@ -13,12 +18,13 @@ import { jsx, Head } from "https://deno.land/x/deserve/utils/jsx/mod.ts"
 router.get("/", () => {
     return jsx(
         <main>
+            <Head>
+                <title>Home Page</title>
+            </Head>
             <h1>Hello, World!</h1>
         </main>,
         {
-            head: Head({
-                title: "Home Page"
-            })
+            status: 200,
         }
     )
 })
@@ -26,14 +32,15 @@ router.get("/", () => {
 /// ...
 ```
 
-## Custom Renderer
+## Advanced Usage
 The **createJsx** function can be used to create a custom **jsx** function
 It takes an object with three functions
 
 - **transformBody**: Takes in a body node and must return jsx that is inserted into the body tag
-- **transformOptions**: Takes in the body string and an options object and must return
-a new options object
-- **transformHtml**: Takes in the final html string must return a new html string that is sent directly as a response
+- **transformBodyStr**: Takes in the rendered body string and must return a new body string that is inserted into the body tag
+- **transformHeadStr**: Takes in the rendered head and body strings and must return a new head string that is inserted into the head tag
+
+> Deserve Docs use this to dynamically inject compiled UNOCSS into the head tag
 
 ```tsx
 import { createJsx, Head } from "https://deno.land/x/deserve/utils/jsx/mod.ts"
@@ -41,36 +48,34 @@ import { createJsx, Head } from "https://deno.land/x/deserve/utils/jsx/mod.ts"
 /// ...
 
 const jsx = createJsx({
-    // Transform the body
+    // Transform the Body Node
     transformBody(body) {
         return <Container>
             {body}
         </Container>
     }
-    // Transform the options
-    transformOptions(bodyStr, { head, ...rest }) {
-        return {
-            head: <Head scripts={[
-                "console.log('Hello World');"
-            ]}>{head}</Head>
-        }
+    // Transform the Body string
+    transformBodyStr(bodyStr) {
+        return bodyStr + `<script>console.log("Hi from the script")</script>`
     }
-    // Transform the html
-    transformHtml(html) {
-        return "<!DOCTYPE html>" + html;
+    // Transform the Head
+    transformHeadStr(head, body) {
+        return head + `<style>
+            body {
+                background-color: red;
+            }
+        </style>`;
     }
 })
 
 router.get("/", () => {
     return jsx(
         <main>
+            <Head>
+                <title>Home Page</title>
+            </Head>
             <h1>Hello, World!</h1>
         </main>,
-        {
-            head: Head({
-                title: "Home Page"
-            })
-        }
     )
 })
 
