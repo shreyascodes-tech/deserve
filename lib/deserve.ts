@@ -1,7 +1,9 @@
 // deno-lint-ignore-file ban-types no-explicit-any
 import {
   serve,
+  serveTls,
   ServeInit,
+  ServeTlsInit,
   ConnInfo,
 } from "https://deno.land/std@0.153.0/http/mod.ts";
 import {
@@ -27,17 +29,18 @@ export interface DeserveApp<CtxExtensions = {}> {
     path: R,
     ...handlers: RouteHandler<R, CtxExtensions>[]
   ): DeserveApp<CtxExtensions>;
-
+  handler(req: Request, conn?: ConnInfo): Promise<Response>;
   listen(init?: ServeInit): Promise<void>;
+  listenTls(init?: ServeTlsInit): Promise<void>;
 }
 
 function contextCreator(
   ctxData: Map<any, any>,
-  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<any>
+  createContext?: (req: Request, conn?: ConnInfo) => PromiseOr<any>
 ) {
   return async function $createContext(
     req: Request,
-    conn: ConnInfo
+    conn?: ConnInfo
   ): Promise<Context> {
     const ctxExt = (await createContext?.(req, conn)) ?? {};
     return {
@@ -66,7 +69,7 @@ function contextCreator(
 }
 
 export function createApp<T = {}>(
-  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<T>
+  createContext?: (req: Request, conn?: ConnInfo) => PromiseOr<T>
 ): DeserveApp<T> {
   const _handlers: Handler[] = [];
   const _hooks: Hook[] = [];
@@ -74,7 +77,7 @@ export function createApp<T = {}>(
 
   const createCtx = contextCreator(ctxData, createContext);
 
-  async function handler(req: Request, conn: ConnInfo) {
+  async function handler(req: Request, conn?: ConnInfo) {
     const { method, url } = req;
     const { pathname } = new URL(url);
 
@@ -217,9 +220,16 @@ export function createApp<T = {}>(
       }
       return this;
     },
-
+    handler,
     listen(init?: ServeInit) {
       return serve(handler, {
+        onListen: defaultOnListenHandler,
+        onError: defaultErrorHandler,
+        ...init,
+      });
+    },
+    listenTls(init?: ServeTlsInit) {
+      return serveTls(handler, {
         onListen: defaultOnListenHandler,
         onError: defaultErrorHandler,
         ...init,

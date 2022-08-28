@@ -5,7 +5,7 @@ import { PromiseOr } from "./internal.ts";
 export type ParamsDictionary = Record<string, string>;
 
 export type Context<Params = ParamsDictionary, Extensions = {}> = {
-  conn: ConnInfo;
+  conn?: ConnInfo;
   pattern?: URLPattern;
   match?: URLPatternResult;
   params?: Params;
