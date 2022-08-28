@@ -1,16 +1,15 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { h, ComponentChildren } from "./preact.ts";
-import { atom } from "https://esm.sh/nanostores@0.6.0";
+import { h, ComponentChildren, createContext, useContext } from "./preact.ts";
 
 export interface HeadProps {
   children: ComponentChildren;
 }
 
-export const HEAD_ATOM = atom<ComponentChildren[]>([]);
+export const HEAD_CTX = createContext<ComponentChildren[]>([]);
 
 export function Head(props: HeadProps) {
-  const head = HEAD_ATOM.get();
-  HEAD_ATOM.set([...head, props.children]);
+  const head = useContext(HEAD_CTX);
+  head.push(props.children);
   return null;
 }

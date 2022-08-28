@@ -1,9 +1,9 @@
 // deno-lint-ignore-file ban-types
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { renderToString } from "https://esm.sh/preact-render-to-string@5.2.2";
-import { h, Fragment, VNode } from "./preact.ts";
-import { HEAD_ATOM } from "./head.tsx";
+import { renderToString } from "https://esm.sh/preact-render-to-string@5.2.2?deps=preact@10.10.6";
+import { h, Fragment, VNode, ComponentChildren } from "./preact.ts";
+import { HEAD_CTX } from "./head.tsx";
 
 export interface RenderJSXOptions {
   html?: h.JSX.HTMLAttributes<HTMLHtmlElement>;
@@ -18,10 +18,12 @@ export interface JSXOptions extends RenderJSXOptions {
 }
 
 function renderJSX(body: VNode<{}>) {
-  HEAD_ATOM.set([]);
+  const headComponents: ComponentChildren[] = [];
 
-  const bodyStr = renderToString(body);
-  const headStr = renderToString(<>{HEAD_ATOM.get()}</>);
+  const bodyStr = renderToString(
+    <HEAD_CTX.Provider value={headComponents}>{body}</HEAD_CTX.Provider>
+  );
+  const headStr = renderToString(<>{headComponents}</>);
 
   return { head: headStr, body: bodyStr };
 }
