@@ -44,7 +44,7 @@ Syntax highlighting of code is supported and enabled by default
 ```ts
 import { renderMd } from "https://deno.land/x/deserve/utils/md/mod.ts"
 
-const { html, attributes } = renderMd(/** --- Markdown goses here --- */, {
+const { html, attributes } = renderMd(/** --- Markdown goes here --- */, {
     highlight: true,
     showCopyButton: true,
 })
@@ -95,4 +95,32 @@ router.get("/", () => {
 
 app.use(router.routes())
 app.listen()
+```
+
+## Themes
+The syntax highlighter supports multiple themes listed below
+
+- coy
+- dark
+- funky
+- okaida
+- prism
+- solarized-light
+- tomorrow
+- twilight
+
+A theme can be applied just by importing the corresponding theme file like below
+
+> The **okaida** theme is applied by default
+
+```ts
+import "https://deno.land/x/deserve/utils/md/themes/{{theme}}.ts"
+```
+
+Replace **{{theme}}** with one of the themes mentioned above
+
+### Example
+
+```ts
+import "https://deno.land/x/deserve/utils/md/themes/coy.ts"
 ```
