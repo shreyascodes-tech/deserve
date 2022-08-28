@@ -1,10 +1,6 @@
 // deno-lint-ignore-file ban-types
-import {
-  ConnInfo,
-  ServeInit,
-} from "https://deno.land/std@0.151.0/http/server.ts";
-
-export type PromiseOr<T> = T | Promise<T>;
+import { ConnInfo } from "https://deno.land/std@0.153.0/http/server.ts";
+import { PromiseOr } from "./internal.ts";
 
 export type ParamsDictionary = Record<string, string>;
 
@@ -15,10 +11,10 @@ export type Context<Params = ParamsDictionary, Extensions = {}> = {
   params?: Params;
   headers: Headers;
   redirect(path: string, status?: number | undefined): Response;
-  hasData(key: string | Symbol | number): boolean;
-  getData<T>(key: string | Symbol | number): T | undefined;
-  setData<T>(key: string | Symbol | number, data: T): void;
-  removeData(key: string | Symbol | number): boolean;
+  hasData(key: string | symbol | number): boolean;
+  getData<T>(key: string | symbol | number): T | undefined;
+  setData<T>(key: string | symbol | number, data: T): void;
+  removeData(key: string | symbol | number): boolean;
 } & Extensions;
 
 export type Handler<Params = ParamsDictionary, CtxExtensions = {}> = (
@@ -63,39 +59,3 @@ export type RouteHandler<
   Route extends string = string,
   CtxExtensions = {}
 > = Handler<RouteParameters<Route>, CtxExtensions>;
-
-export interface Hook<R extends string = string, CtxExtensions = {}> {
-  preHandler?: RouteHandler<R, CtxExtensions>;
-  postHandler?: RouteHandler<
-    R,
-    CtxExtensions & { response: Response | undefined }
-  >;
-}
-
-export interface DeserveApp<CtxExtensions = {}> {
-  hook(...hooks: Hook<string, CtxExtensions>[]): DeserveApp<CtxExtensions>;
-  hook<R extends string = string>(
-    path: R,
-    ...hooks: Hook<R, CtxExtensions>[]
-  ): DeserveApp<CtxExtensions>;
-  use(
-    ...handlers: Handler<ParamsDictionary, CtxExtensions>[]
-  ): DeserveApp<CtxExtensions>;
-  use<R extends string = string>(
-    path: R,
-    ...handlers: RouteHandler<R, CtxExtensions>[]
-  ): DeserveApp<CtxExtensions>;
-
-  listen(init?: ServeInit): Promise<void>;
-}
-
-export type Method =
-  | "GET"
-  | "POST"
-  | "PUT"
-  | "PATCH"
-  | "DELETE"
-  | "OPTIONS"
-  | "HEAD"
-  | "TRACE"
-  | "ALL";

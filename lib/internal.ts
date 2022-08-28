@@ -1,6 +1,8 @@
 import { serveFile } from "https://deno.land/std@0.151.0/http/file_server.ts";
 import { join, normalize } from "https://deno.land/std@0.151.0/path/posix.ts";
-import { EtagAlgorithm } from "./types/static.ts";
+import { EtagAlgorithm } from "./handlers/static.ts";
+
+export type PromiseOr<T> = T | Promise<T>;
 
 /** URL UTILS ( Yanked from the oak repo ) */
 

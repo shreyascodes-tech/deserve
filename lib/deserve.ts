@@ -1,43 +1,46 @@
-// deno-lint-ignore-file no-explicit-any
+// deno-lint-ignore-file ban-types no-explicit-any
 import {
-  ConnInfo,
   serve,
   ServeInit,
-} from "https://deno.land/std@0.151.0/http/server.ts";
-import { getMatch, setMatch, withLeadingSlash } from "./internal.ts";
-import {
-  DeserveApp,
-  Context,
-  Handler,
-  Hook,
-  RouteHandler,
-  ParamsDictionary,
-  PromiseOr,
-} from "./types/core.ts";
+  ConnInfo,
+} from "https://deno.land/std@0.153.0/http/mod.ts";
 import {
   defaultErrorHandler,
   defaultOnListenHandler,
   response,
 } from "./utils.ts";
+import { Context, Handler, ParamsDictionary, RouteHandler } from "./handler.ts";
+import { Hook } from "./hook.ts";
+import { PromiseOr, withLeadingSlash, getMatch, setMatch } from "./internal.ts";
 
-// deno-lint-ignore ban-types
-export function createApp<T = {}>(
-  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<T>
-): DeserveApp<T> {
-  const _handlers: Handler[] = [];
-  const _hooks: Hook[] = [];
-  const ctxData = new Map();
+/** */
+export interface DeserveApp<CtxExtensions = {}> {
+  hook(...hooks: Hook<string, CtxExtensions>[]): DeserveApp<CtxExtensions>;
+  hook<R extends string = string>(
+    path: R,
+    ...hooks: Hook<R, CtxExtensions>[]
+  ): DeserveApp<CtxExtensions>;
+  use(
+    ...handlers: Handler<ParamsDictionary, CtxExtensions>[]
+  ): DeserveApp<CtxExtensions>;
+  use<R extends string = string>(
+    path: R,
+    ...handlers: RouteHandler<R, CtxExtensions>[]
+  ): DeserveApp<CtxExtensions>;
 
-  const handler = async function serveHandler(req: Request, conn: ConnInfo) {
-    const { method, url } = req;
-    const { pathname } = new URL(url);
+  listen(init?: ServeInit): Promise<void>;
+}
 
-    let res: Response | void;
-
+function contextCreator(
+  ctxData: Map<any, any>,
+  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<any>
+) {
+  return async function $createContext(
+    req: Request,
+    conn: ConnInfo
+  ): Promise<Context> {
     const ctxExt = (await createContext?.(req, conn)) ?? {};
-
-    ctxData.clear();
-    const ctx: Context = {
+    return {
       conn,
       headers: new Headers(),
       hasData(key) {
@@ -59,6 +62,25 @@ export function createApp<T = {}>(
       },
       ...ctxExt,
     };
+  };
+}
+
+export function createApp<T = {}>(
+  createContext?: (req: Request, conn: ConnInfo) => PromiseOr<T>
+): DeserveApp<T> {
+  const _handlers: Handler[] = [];
+  const _hooks: Hook[] = [];
+  const ctxData = new Map();
+
+  const createCtx = contextCreator(ctxData, createContext);
+
+  async function handler(req: Request, conn: ConnInfo) {
+    const { method, url } = req;
+    const { pathname } = new URL(url);
+
+    let res: Response | void;
+
+    const ctx = await createCtx(req, conn);
 
     // Execute Pre Hooks
     for (const hook of _hooks) {
@@ -161,7 +183,7 @@ export function createApp<T = {}>(
       status: 404,
       headers: resHeaders,
     });
-  };
+  }
 
   return {
     hook<R extends string = string>(pathOrHook: R | Hook, ...hooks: Hook<R>[]) {

@@ -1,7 +1,74 @@
 // deno-lint-ignore-file no-explicit-any ban-types
-import { DeserveApp, Handler, Method, RouteHandler } from "./types/core.ts";
-import { joinURL } from "./internal.ts";
-import { AppRouter, Route, routesMapSymbol } from "./types/router.ts";
+import { DeserveApp } from "../deserve.ts";
+import { Handler, ParamsDictionary, RouteHandler } from "../handler.ts";
+import { joinURL } from "../internal.ts";
+// import { AppRouter, Route, routesMapSymbol } from "./types/router.ts";
+
+export type Method =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE"
+  | "OPTIONS"
+  | "HEAD"
+  | "TRACE"
+  | "ALL";
+
+const routesMapSymbol = Symbol();
+
+interface Route<T = ParamsDictionary> {
+  pattern: URLPattern;
+  handler: Handler<T>;
+}
+
+export interface Router<CtxExtensions> {
+  [routesMapSymbol]: Map<Method, Route[]>;
+  all<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  get<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  post<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  put<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  patch<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  delete<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  options<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  head<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  trace<R extends string>(
+    path: R,
+    ...handler: RouteHandler<R, CtxExtensions>[]
+  ): Router<CtxExtensions>;
+  append<T>(router: Router<T>): Router<CtxExtensions>;
+  routes(): Handler;
+}
+
+type GetCtxExts<T> = T extends DeserveApp<infer CtxExtensions>
+  ? CtxExtensions
+  : T;
+
+export type AppRouter<T extends DeserveApp> = Router<GetCtxExts<T>>;
 
 export function createRouter<App extends DeserveApp = DeserveApp<{}>>(
   prefix = ""

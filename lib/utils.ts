@@ -5,8 +5,10 @@ import {
   brightMagenta,
   brightYellow,
   magenta,
-} from "https://deno.land/std@0.151.0/fmt/colors.ts";
-import { Handler, Hook, PromiseOr } from "./types/core.ts";
+} from "https://deno.land/std@0.153.0/fmt/colors.ts";
+import { Context, Handler } from "./handler.ts";
+import { Hook } from "./hook.ts";
+import { PromiseOr } from "./internal.ts";
 
 export function defaultOnListenHandler(params: {
   hostname: string;
@@ -48,6 +50,7 @@ export function createLogger(filterPaths?: string[]): Hook {
   };
 }
 
+/** An alias for the Response constructor */
 export function response(
   body?: BodyInit | null | undefined,
   init?: ResponseInit | undefined
@@ -55,7 +58,12 @@ export function response(
   return new Response(body, init);
 }
 
-/** Catch errors occuring in a particular handler
+/** Creates a JSON Response object with given data */
+export function json(data?: unknown, init?: ResponseInit | undefined) {
+  return Response.json(data, init);
+}
+
+/** Catch errors occurring in a particular handler
  * ```ts
  *  errorBoundary(
  *        (req) => {
@@ -63,7 +71,7 @@ export function response(
  *            return response("Unreachable.!")
  *        },
  *        // A function that handles the error
- *        (req, err) => {
+ *        (req, ctx, err) => {
  *          console.error(err)
  *          return response("Oh oh an Error Occured", {
  *              status: 500
@@ -76,6 +84,7 @@ export function errorBoundary(
   handler: Handler,
   onError: (
     req: Request,
+    cts: Context,
     err: unknown
   ) => PromiseOr<Response | null | undefined | void>
 ): Handler {
@@ -86,7 +95,7 @@ export function errorBoundary(
       res = (await handler(req, ctx)) as any;
     } catch (error) {
       // deno-lint-ignore no-explicit-any
-      res = (await onError(req, error)) as any;
+      res = (await onError(req, ctx, error)) as any;
     }
     return res;
   };

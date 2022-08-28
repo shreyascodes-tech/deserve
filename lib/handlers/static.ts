@@ -1,12 +1,43 @@
-import { serveFile } from "https://deno.land/std@0.151.0/http/file_server.ts";
-import { join } from "https://deno.land/std@0.151.0/path/posix.ts";
+import { serveFile } from "https://deno.land/std@0.153.0/http/file_server.ts";
+import { join } from "https://deno.land/std@0.153.0/path/posix.ts";
 import {
   normalizeURL,
+  PromiseOr,
   serveDirIndex,
   verifyAndSanitizeUrlRoot,
-} from "./internal.ts";
-import { Handler, ParamsDictionary } from "./types/core.ts";
-import { SendFileOptions, ServeStaticOptions } from "./types/static.ts";
+} from "../internal.ts";
+import { Context, Handler, ParamsDictionary } from "../handler.ts";
+
+export type EtagAlgorithm =
+  | "fnv1a"
+  | "sha-1"
+  | "sha-256"
+  | "sha-384"
+  | "sha-512";
+
+/** Interface for serveFile options. */
+export interface SendFileOptions {
+  /** The algorithm to use for generating the ETag. Defaults to "fnv1a". */
+  etagAlgorithm?: EtagAlgorithm;
+  /** An optional FileInfo object returned by Deno.stat. It is used for optimization purposes. */
+  fileInfo?: Deno.FileInfo;
+}
+
+/** Interface for serveDir options. */
+export interface ServeStaticOptions {
+  /** Serves the files under the given directory root. Defaults to your current directory. */
+  fsRoot?: string;
+  /** Enable Serving index.html on base route. Defaults to true. */
+  serveIndex?: boolean;
+  /** The algorithm to use for generating the ETag. Defaults to "fnv1a". */
+  etagAlgorithm?: EtagAlgorithm;
+  /** This Functon is called whenever the file is not found */
+  onError?: (
+    request: Request,
+    ctx: Context,
+    err: unknown
+  ) => PromiseOr<Response | void>;
+}
 
 /**
  * Returns an HTTP Response with the requested file as the body.

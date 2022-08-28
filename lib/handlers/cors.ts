@@ -1,5 +1,5 @@
-import { Context, Handler } from "./types.ts";
-import { response } from "./utils.ts";
+import { Context, Handler } from "../handler.ts";
+import { response } from "../utils.ts";
 
 type Origin = boolean | string | RegExp | (boolean | string | RegExp)[];
 
