@@ -13,7 +13,7 @@ import {
 } from "./utils.ts";
 import { Context, Handler, ParamsDictionary, RouteHandler } from "./handler.ts";
 import { Hook } from "./hook.ts";
-import { PromiseOr, withLeadingSlash, getMatch, setMatch } from "./internal.ts";
+import { PromiseOr, getMatch, setMatch } from "./internal.ts";
 
 /** */
 export interface DeserveApp<CtxExtensions = {}> {
@@ -59,8 +59,7 @@ function contextCreator(
         return ctxData.delete(key);
       },
       redirect(path, status) {
-        const url = new URL(req.url);
-        url.pathname = withLeadingSlash(path);
+        const url = new URL(path, req.url);
         return Response.redirect(url, status);
       },
       ...ctxExt,
@@ -175,10 +174,11 @@ export function createApp<T = {}>(
       if (newRes) res = newRes;
     }
 
-    const resHeaders = new Headers(res?.headers);
+    const resHeaders = new Headers(res.headers);
 
     if (res) {
-      resHeaders.forEach((val, k) => res!.headers.append(k, val));
+      resHeaders.forEach((val, k) => resHeaders.append(k, val));
+      Reflect.set(res, "headers", resHeaders);
       return res;
     }
 
