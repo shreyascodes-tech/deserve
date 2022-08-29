@@ -38,7 +38,7 @@ const links: ([string, string] | [string, VNode, string])[] = [
 
 function Header({ hasSidebar = false }) {
   return (
-    <header class="bg-[#1f2937] py-2 border-b-1 border-white/20 text-white">
+    <header class="bg-[#1f2937]/50 backdrop-blur-md py-2 border-b-1 border-white/20 text-white sticky top-0 z-50">
       <div class="container flex flex-col items-center justify-between mx-auto md:flex-row">
         <a
           class="outline-none px-6 py-3 bg-transparent hover:bg-white/25 focus:bg-white/25 rounded-sm transition-colors"
@@ -101,8 +101,11 @@ export function Layout({
 }: ComponentProps<ComponentType<LayOutProps>>) {
   return (
     <>
-      <Header hasSidebar={!!sideBar} />
-      <div class="bg-[#111827] w-full">
+      {/* <div class="bg-[#111827] w-full">
+        
+      </div> */}
+      <div class="w-full h-full md:h-full text-white overflow-y-auto bg-[#111827]">
+        <Header hasSidebar={!!sideBar} />
         <strong class="bg-amber-500/10 flex justify-center items-center gap-x-3 px-3 py-4 border-b-1 border-amber-200/75 text-amber-200">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -120,8 +123,6 @@ export function Layout({
           </svg>
           Deserve is Still in its early stages, expect breaking changes
         </strong>
-      </div>
-      <div class="w-full h-full md:h-full text-white overflow-y-auto bg-[#111827]">
         <div
           class={`container min-h-full ${
             sideBar ? "flex gap-x-6" : ""
@@ -130,7 +131,7 @@ export function Layout({
           {sideBar && (
             <aside
               id="sidebar"
-              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] lg:h-min lg:sticky lg:inset-auto lg:top-0 lg:bg-transparent lg:p-0 lg:pt-3 lg:w-[300px] lg:opacity-100 lg:pointer-events-auto"
+              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] lg:h-min lg:sticky lg:inset-auto lg:top-[85px] lg:bg-transparent lg:p-0 lg:pt-3 lg:w-[300px] lg:opacity-100 lg:pointer-events-auto"
             >
               <button
                 data-sidebar-toggle
