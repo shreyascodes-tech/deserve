@@ -10,6 +10,7 @@ export function NotFound({ from = "" }) {
         <Res status={404} />
         <title>Not Found</title>
       </Head>
+      <img src="/404.svg" alt="You Are Offline" class="w-80 mx-auto mt-12" />
       <h1 class="text-center mt-12 text-4xl font-bold">
         Oops! Page {from === "" ? "You Are Looking For is" : from} Not found
       </h1>
