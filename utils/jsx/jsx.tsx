@@ -141,11 +141,11 @@ export function createJSX(options: CreateJSXOptions = {}) {
 }
 
 let __jsx: (body: VNode<{}>) => Promise<Response>;
-export const jsx = (body: VNode<{}>) => {
+export function jsx(body: VNode<{}>) {
   if (__jsx) {
     __jsx = createJSX();
   }
   return __jsx(body);
-};
+}
 
 export { renderToString as renderJSXToString } from "https://esm.sh/preact-render-to-string@5.2.2";
