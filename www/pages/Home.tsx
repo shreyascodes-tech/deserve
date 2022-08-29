@@ -1,6 +1,5 @@
 /** @jsx h */
-import { h } from "https://deno.land/x/htm@0.0.10/mod.tsx";
-import { Head } from "../../utils/jsx/mod.ts";
+import { h, Head } from "../../utils/jsx/mod.ts";
 import { Layout } from "../components/Layout.tsx";
 
 // deno-lint-ignore no-explicit-any

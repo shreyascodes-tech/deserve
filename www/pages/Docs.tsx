@@ -1,7 +1,6 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
-import { Head } from "../../utils/jsx/mod.ts";
+import { h, Fragment, Head } from "../../utils/jsx/mod.ts";
 import { Layout } from "../components/Layout.tsx";
 import { Prose } from "../components/Prose.tsx";
 import SideBar from "../components/SideBar.tsx";

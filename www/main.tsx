@@ -1,13 +1,6 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import {
-  h,
-  Fragment,
-  VNode,
-  createJsx,
-  Head,
-  JSXOptions,
-} from "../utils/jsx/mod.ts";
+import { h, Fragment, VNode, createJSX, Head } from "../utils/jsx/mod.ts";
 
 import { UnoGenerator } from "https://esm.sh/@unocss/core@0.45.7";
 import { presetUno } from "https://esm.sh/@unocss/preset-uno@0.45.7";
@@ -29,10 +22,12 @@ const jsx = (() => {
     presets: [presetUno({}) as any, presetTypography({})],
   });
 
-  return createJsx({
-    async transformHeadStr(head, body) {
-      const { css } = await uno.generate(body);
-      return head + `<style>${css}</style>`;
+  return createJSX({
+    async transform(ctx) {
+      const { css } = await uno.generate(ctx.body);
+      ctx.head.children.push(
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+      );
     },
   });
 })();
@@ -47,8 +42,7 @@ function createContext() {
     docsMap,
     render(
       // deno-lint-ignore ban-types
-      body: VNode<{}>,
-      opts: JSXOptions = {}
+      body: VNode<{}>
     ) {
       return jsx(
         <>
@@ -64,8 +58,7 @@ function createContext() {
             {dev && <script dangerouslySetInnerHTML={{ __html: devScript }} />}
           </Head>
           {body}
-        </>,
-        opts
+        </>
       );
     },
   };
