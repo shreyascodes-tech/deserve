@@ -1,8 +1,10 @@
 // deno-lint-ignore-file ban-types
 /** @jsx h */
+/** @jsxFrag Fragment */
 import { renderToString } from "https://esm.sh/preact-render-to-string@5.2.2?deps=preact@10.10.6";
 import {
   h,
+  Fragment,
   VNode,
   ComponentChildren,
   createContext,
@@ -35,7 +37,7 @@ export function Body({
 }: h.JSX.HTMLAttributes<HTMLBodyElement>) {
   const body = useContext(BODY_CTX);
   body.attrs = { ...body.attrs, ...props };
-  return children;
+  return <>{children}</>;
 }
 
 type HtmlData = { attrs: h.JSX.HTMLAttributes<HTMLHtmlElement> };
@@ -46,7 +48,7 @@ export function Html({
 }: h.JSX.HTMLAttributes<HTMLHtmlElement>) {
   const html = useContext(HTML_CTX);
   html.attrs = { ...html.attrs, ...props };
-  return children;
+  return <>{children}</>;
 }
 
 const RESP_CTX = createContext<{
@@ -99,7 +101,11 @@ export function createJSX(options: CreateJSXOptions = {}) {
           />,
         ],
       },
-      htmlData: { attrs: {} },
+      htmlData: {
+        attrs: {
+          lang: "en",
+        },
+      },
     };
 
     ctx.body = renderToString(
@@ -117,7 +123,7 @@ export function createJSX(options: CreateJSXOptions = {}) {
     await options.transform?.(ctx);
 
     const html =
-      "<!DOCTYPE html" +
+      "<!DOCTYPE html>" +
       renderToString(
         <RESP_CTX.Provider value={ctx.response}>
           <html {...ctx.htmlData.attrs}>
@@ -134,6 +140,12 @@ export function createJSX(options: CreateJSXOptions = {}) {
   };
 }
 
-export const jsx = createJSX();
+let __jsx: (body: VNode<{}>) => Promise<Response>;
+export const jsx = (body: VNode<{}>) => {
+  if (__jsx) {
+    __jsx = createJSX();
+  }
+  return __jsx(body);
+};
 
 export { renderToString as renderJSXToString } from "https://esm.sh/preact-render-to-string@5.2.2";
