@@ -101,10 +101,7 @@ export function Layout({
 }: ComponentProps<ComponentType<LayOutProps>>) {
   return (
     <>
-      {/* <div class="bg-[#111827] w-full">
-        
-      </div> */}
-      <div class="w-full h-full md:h-full text-white overflow-y-auto bg-[#111827]">
+      <div class="w-full h-full text-white overflow-y-auto bg-[#111827]">
         <Header hasSidebar={!!sideBar} />
         <strong class="bg-amber-500/10 flex justify-center items-center gap-x-3 px-3 py-4 border-b-1 border-amber-200/75 text-amber-200">
           <svg
@@ -124,7 +121,7 @@ export function Layout({
           Deserve is Still in its early stages, expect breaking changes
         </strong>
         <div
-          class={`container min-h-full ${
+          class={`container min-h-[60vh] ${
             sideBar ? "flex gap-x-6" : ""
           } max-w-[${sideBar ? 1400 : 1000}px] px-4 mx-auto`}
         >
