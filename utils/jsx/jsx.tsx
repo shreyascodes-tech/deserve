@@ -119,13 +119,15 @@ export function createJSX(options: CreateJSXOptions = {}) {
     const html =
       "<!DOCTYPE html" +
       renderToString(
-        <html {...ctx.htmlData.attrs}>
-          <head {...ctx.head.attrs}>{ctx.head.children}</head>
-          <body
-            {...ctx.bodyData.attrs}
-            dangerouslySetInnerHTML={{ __html: ctx.body }}
-          />
-        </html>
+        <RESP_CTX.Provider value={ctx.response}>
+          <html {...ctx.htmlData.attrs}>
+            <head {...ctx.head.attrs}>{ctx.head.children}</head>
+            <body
+              {...ctx.bodyData.attrs}
+              dangerouslySetInnerHTML={{ __html: ctx.body }}
+            />
+          </html>
+        </RESP_CTX.Provider>
       );
 
     return new Response(html, ctx.response);
