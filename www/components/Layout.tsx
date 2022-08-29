@@ -103,7 +103,7 @@ export function Layout({
     <>
       <Header hasSidebar={!!sideBar} />
       <div class="bg-[#111827] w-full">
-        <strong class="bg-amber-500/10  flex justify-center items-center gap-x-3 py-4 border-b-1 border-amber-200/75 text-amber-200">
+        <strong class="bg-amber-500/10 flex justify-center items-center gap-x-3 px-3 py-4 border-b-1 border-amber-200/75 text-amber-200">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
