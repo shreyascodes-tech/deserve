@@ -59,6 +59,13 @@ function createContext() {
                   `* { -webkit-tap-highlight-color: transparent; } body { height: 100vh; display: flex; flex-direction: column; }`,
               }}
             />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `if ('serviceWorker' in navigator) {
+   navigator.serviceWorker.register("/sw.js");
+}`,
+              }}
+            />
             <script src="/router.js"></script>
             {dev && <script dangerouslySetInnerHTML={{ __html: devScript }} />}
           </Head>
