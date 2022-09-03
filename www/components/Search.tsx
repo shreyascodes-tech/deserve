@@ -88,7 +88,7 @@ async function searchQuery(query: string) {
 
 export function SearchBar() {
   const [searchInput, setSearchInput] = useState("");
-  const debouncedSearchInput = useDebounce(searchInput, 350);
+  const debouncedSearchInput = useDebounce(searchInput, 150);
   const searchFn = useCallback(
     () => searchQuery(debouncedSearchInput),
     [debouncedSearchInput]
@@ -116,7 +116,6 @@ export function SearchBar() {
           type="search"
           value={searchInput}
           onInput={onChangeHandler}
-          onBlur={() => setSearchInput("")}
           placeholder="Search Docs"
         />
         <div
