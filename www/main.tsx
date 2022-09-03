@@ -57,7 +57,7 @@ function createContext() {
       return jsx(
         <>
           <Head>
-            {h("link", { rel: "apple-touch-icon", href: "/logo.png" })}
+            <link rel="apple-touch-icon" href="/logo.png" />
             <link rel="icon" href="/logo.png" />
             <link rel="manifest" href="/manifest.webmanifest" />
             <style

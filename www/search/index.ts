@@ -1,5 +1,4 @@
-// import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import convert from "https://esm.sh/html2plaintext";
+import convert from "https://esm.sh/html2plaintext@2.1.4";
 import Fuse from "https://esm.sh/fuse.js@6.6.2";
 import { options } from "./shared.ts";
 
