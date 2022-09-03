@@ -7,7 +7,8 @@ import {
   ComponentType,
   ComponentChildren,
   VNode,
-} from "https://deno.land/x/htm@0.0.10/mod.tsx";
+} from "../../utils/jsx/mod.ts";
+import { SearchBar } from "./Search.tsx";
 
 export interface LayOutProps {
   // deno-lint-ignore ban-types
@@ -39,7 +40,7 @@ const links: ([string, string] | [string, VNode, string])[] = [
 function Header({ hasSidebar = false }) {
   return (
     <header class="bg-[#1f2937]/50 backdrop-blur-md py-2 border-b-1 border-white/20 text-white sticky top-0 z-50">
-      <div class="container flex flex-col items-center justify-between mx-auto md:flex-row">
+      <div class="container flex flex-col items-center mx-auto md:flex-row">
         <a
           class="outline-none px-6 py-3 bg-transparent hover:bg-white/25 focus:bg-white/25 rounded-sm transition-colors"
           href="/"
@@ -50,46 +51,51 @@ function Header({ hasSidebar = false }) {
             alt="Deserve Home"
           />
         </a>
-        <ul class="flex text-sm items-center max-w-full overflow-x-auto">
-          {hasSidebar && (
-            <li>
-              <button
-                class="block lg:hidden px-6 py-2 bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors rounded-full"
-                type="button"
-                title="Open Menu"
-                data-sidebar-toggle
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
+        <div class="ml-auto mr-6 hidden lg:block search-bar bg-black/30">
+          <SearchBar />
+        </div>
+        <nav class="mx-auto md:mr-0 md:ml-auto lg:ml-0">
+          <ul class="flex text-sm items-center max-w-full overflow-x-auto">
+            {hasSidebar && (
+              <li>
+                <button
+                  class="block lg:hidden px-6 py-2 bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors rounded-full"
+                  type="button"
+                  title="Open Menu"
+                  data-sidebar-toggle
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h8m-8 6h16"
-                  />
-                </svg>
-              </button>
-            </li>
-          )}
-          {links.map(([path, child, title]) => (
-            <li>
-              <a
-                class={`block px-6 py-2 text-center bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors ${
-                  typeof child === "string" ? "rounded-md" : "rounded-full"
-                }`}
-                title={title}
-                href={path}
-              >
-                {child}
-              </a>
-            </li>
-          ))}
-        </ul>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6h16M4 12h8m-8 6h16"
+                    />
+                  </svg>
+                </button>
+              </li>
+            )}
+            {links.map(([path, child, title]) => (
+              <li>
+                <a
+                  class={`block px-6 py-2 text-center bg-transparent hover:bg-white/25 focus:bg-white/25 active:bg-white/25 transition-colors ${
+                    typeof child === "string" ? "rounded-md" : "rounded-full"
+                  }`}
+                  title={title}
+                  href={path}
+                >
+                  {child}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </header>
   );
@@ -128,7 +134,7 @@ export function Layout({
           {sideBar && (
             <aside
               id="sidebar"
-              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 md:z-10 p-12 pt-[4rem] lg:h-min lg:sticky lg:inset-auto lg:top-[85px] lg:bg-transparent lg:p-0 lg:pt-3 lg:w-[300px] lg:opacity-100 lg:pointer-events-auto"
+              class="opacity-0 pointer-events-none transition-opacity fixed inset-0 bg-black/95 z-200 p-12 pt-[4rem] lg:h-min lg:sticky lg:inset-auto lg:top-[85px] lg:bg-transparent lg:p-0 lg:pt-3 lg:w-[300px] lg:opacity-100 lg:pointer-events-auto"
             >
               <button
                 data-sidebar-toggle

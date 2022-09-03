@@ -1,8 +1,9 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { h, Fragment } from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { h, Fragment } from "../../utils/jsx/mod.ts";
 import { joinURL, withTrailingSlash } from "../../lib/internal.ts";
 import docs from "../docs/docs.json" assert { type: "json" };
+import { SearchBar } from "./Search.tsx";
 
 interface Entry {
   title: string;
@@ -58,6 +59,9 @@ export default function SideBar({ path: currentPage }: { path: string }) {
   return (
     <>
       <strong class="text-lg">Documentation</strong>
+      <div class="lg:hidden mt-4 search-bar bg-white/30">
+        <SearchBar />
+      </div>
       <ul class="mt-3">
         {entries.map(([path, entry]) => (
           <ListItem

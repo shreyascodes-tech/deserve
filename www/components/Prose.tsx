@@ -1,9 +1,5 @@
 /** @jsx h */
-import {
-  h,
-  ComponentProps,
-  ComponentType,
-} from "https://deno.land/x/htm@0.0.10/mod.tsx";
+import { h, ComponentProps, ComponentType } from "../../utils/jsx/mod.ts";
 
 export interface ProseProps {
   html?: string;
