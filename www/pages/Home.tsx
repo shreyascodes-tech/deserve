@@ -26,10 +26,15 @@ export function Home() {
     <Layout>
       <Head>
         <title>Deserve</title>
+        <meta
+          name="description"
+          content="Deserve Is a simple, fast and light weight web framework for deno. It also supports Deno Deploy"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
           rel="stylesheet"
+          defer
           href="https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap"
         />
         <style
