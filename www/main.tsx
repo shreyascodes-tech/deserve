@@ -19,7 +19,7 @@ import { DocsHome } from "./pages/DocsHome.tsx";
 import { Docs } from "./pages/Docs.tsx";
 import { NotFound } from "./pages/404.tsx";
 import { createSearch } from "./search/search.ts";
-import { buildFile, stop } from "../utils/jsx/compile.ts";
+import { buildFile, stop } from "../utils/esbuild/mod.ts";
 import { response } from "../lib/utils.ts";
 
 const unoResetCSS = `/* reset */
