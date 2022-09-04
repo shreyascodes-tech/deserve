@@ -10,11 +10,15 @@ if (Deno.run === undefined) {
   await esbuild.initialize({});
 }
 
-export function buildFile(path: string) {
+export function buildFile(path: string, importMapURL?: URL) {
   return esbuild
     .build({
       entryPoints: [path],
-      plugins: [denoPlugin()],
+      plugins: [
+        denoPlugin({
+          importMapURL,
+        }),
+      ],
       bundle: true,
       minify: true,
       write: false,
