@@ -78,6 +78,7 @@ export interface RenderContext {
 }
 
 export interface CreateJSXOptions {
+  beforeRender?(ctx: RenderContext): void | Promise<void>;
   transformBody?(body: VNode<{}>): VNode<{}>;
   transform?(ctx: RenderContext): void | Promise<void>;
 }
@@ -107,6 +108,8 @@ export function createJSX(options: CreateJSXOptions = {}) {
         },
       },
     };
+
+    await options.beforeRender?.(ctx);
 
     ctx.body = renderToString(
       <RESP_CTX.Provider value={ctx.response}>
