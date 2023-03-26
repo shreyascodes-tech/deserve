@@ -1,3 +1,0 @@
-#! /bin/bash
-deno run -A ./www/docs.ts
-deno run -A ./www/search/index.ts

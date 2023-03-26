@@ -1,8 +1,0 @@
-{
-  "tasks": {
-    "docs": "sh ./scripts/dev-docs",
-    "docs:router": "deno run -A ./scripts/router.ts",
-    "docs:serve": "sh ./scripts/docs",
-    "docs:build": "sh ./scripts/build-docs"
-  }
-}
