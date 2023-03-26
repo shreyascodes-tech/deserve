@@ -5,10 +5,9 @@ import {
   Handler,
   ListenOptions,
   ListenTlsOptions,
-  Method,
-  RequestEvent,
-  Status,
 } from "./types.ts";
+
+import { createRequestEvent, createResponse, setParams } from "./event.ts";
 
 /**
  * The Server represents a server instance that can be used to handle requests.
@@ -88,34 +87,17 @@ class Server {
     path: string,
     ...middlewares: Handler<Params>[]
   ): this;
-  use<Params extends BaseParams>(
-    pathOrPatternOrMiddleware: string | URLPattern | Handler<Params>,
-    ...middlewares: Handler<Params>[]
+  use(
+    pathOrPatternOrMiddleware: string | URLPattern | Handler<BaseParams>,
+    ...middlewares: Handler<BaseParams>[]
   ) {
-    let pathOrPattern: string | URLPattern | undefined;
     if (
       typeof pathOrPatternOrMiddleware === "string" ||
       pathOrPatternOrMiddleware instanceof URLPattern
     ) {
-      pathOrPattern = pathOrPatternOrMiddleware;
+      this.addMiddlewareWithPattern(pathOrPatternOrMiddleware, ...middlewares);
     } else {
-      middlewares.push(pathOrPatternOrMiddleware);
-    }
-
-    for (const middleware of middlewares) {
-      this.middlewares.push(
-        pathOrPattern
-          ? {
-              pattern:
-                pathOrPattern instanceof URLPattern
-                  ? pathOrPattern
-                  : new URLPattern({
-                      pathname: pathOrPattern,
-                    }),
-              middleware: middleware as Handler<BaseParams>,
-            }
-          : (middleware as Handler<BaseParams>)
-      );
+      this.addMiddleware(pathOrPatternOrMiddleware, ...middlewares);
     }
 
     return this;
@@ -141,48 +123,27 @@ class Server {
     const middlewares = this.middlewares;
     const url = new URL(req.url);
 
-    const event: RequestEvent<BaseParams> = {
-      request: req,
-      params: {},
-      method: req.method as Method,
-      headers: new Headers(),
-    };
+    const event = createRequestEvent(req);
 
-    let response: Response | void;
+    let response: Response | undefined;
     for (const middleware of middlewares) {
       if (typeof middleware === "function") {
-        response = await middleware(event);
+        response = (await middleware(event)) as Response | undefined;
       } else {
         const { pattern, middleware: m } = middleware;
 
         const match = pattern.exec(url);
         if (!match) continue;
 
-        event.params = match.pathname.groups;
+        setParams(event, match.pathname.groups);
 
-        response = await m(event);
+        response = (await m(event)) as Response | undefined;
       }
 
       if (response) break;
     }
 
-    const headers = event.headers;
-
-    if (!response)
-      return new Response("Not Found", {
-        status: Status.NotFound,
-        headers,
-      });
-
-    response.headers.forEach((value, key) => {
-      headers.set(key, value);
-    });
-
-    return new Response(response.body, {
-      status: response.status,
-      headers,
-      statusText: response.statusText,
-    });
+    return createResponse(event, response);
   }
 
   /**
@@ -222,6 +183,25 @@ class Server {
    */
   listenTls(init: ListenTlsOptions) {
     return serveTls(this.handle, init);
+  }
+
+  private addMiddleware(...middleware: Handler<BaseParams>[]) {
+    for (const m of middleware) {
+      this.middlewares.push(m);
+    }
+  }
+
+  private addMiddlewareWithPattern(
+    pattern: URLPattern | string,
+    ...middleware: Handler<BaseParams>[]
+  ) {
+    if (typeof pattern === "string") {
+      pattern = new URLPattern({ pathname: pattern });
+    }
+
+    for (const m of middleware) {
+      this.middlewares.push({ pattern, middleware: m });
+    }
   }
 }
 
