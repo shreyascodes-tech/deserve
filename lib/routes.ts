@@ -4,7 +4,6 @@ import { joinURL } from "https://esm.sh/ufo@1.1.1";
 
 export class Routes {
   private paths: (string | undefined)[] = [];
-  private patterns = new Map<string, URLPattern>();
   private methods: (Method | undefined)[] = [];
   private handlers: Handler<string, BaseState, BaseParams>[][] = [];
 

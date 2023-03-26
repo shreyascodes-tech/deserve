@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std@0.181.0/http/mod.ts";
 import type { RequestEvent, Method } from "./event.ts";
 
-export { Status, Cookie, Method };
+export { Status, Cookie, Method, RequestEvent };
 
 /**
  * The options that can be passed to the `listen` method.
@@ -75,7 +75,7 @@ export type PathParameters<Path extends string> = string extends Path
  * If the handler function returns `undefined` or `void` the request is passed to the next middleware.
  */
 export type Handler<
-  Path extends string,
+  Path extends string = string,
   State extends BaseState = BaseState,
   Params extends BaseParams = BaseParams
 > = (

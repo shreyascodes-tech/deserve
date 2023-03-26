@@ -18,8 +18,8 @@ export async function assertResponse(
 ) {
   assertEquals(actual.status, expected.status, "status " + message);
   assertEquals(
-    actual.headers.values(),
-    expected.headers.values(),
+    Object.fromEntries(actual.headers.entries()),
+    Object.fromEntries(expected.headers.entries()),
     "headers " + message
   );
 

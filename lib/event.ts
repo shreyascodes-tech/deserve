@@ -86,7 +86,7 @@ export function createResponse(ev: Event, response?: Response) {
  *
  */
 export type RequestEvent<
-  Params extends Record<string, string>,
+  Params extends Record<string, string> = BaseParams,
   State extends BaseState = BaseState
 > = Event<Params, State>;
 export function createRequestEvent<State extends BaseState = BaseState>(

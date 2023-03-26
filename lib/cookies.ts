@@ -19,7 +19,7 @@ class Cookies {
   }
 
   set(name: string, value: string, options?: CookieOptions) {
-    setCookie(this.request.headers, { name, value, ...options });
+    setCookie(this.headers, { name, value, ...options });
   }
 
   delete(

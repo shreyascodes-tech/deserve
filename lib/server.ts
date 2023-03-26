@@ -26,10 +26,10 @@ import { createRequestEvent, createResponse, setParams } from "./event.ts";
  */
 class Server<ServerState extends BaseState = BaseState> {
   private middlewares: (
-    | Handler<"", BaseParams>
+    | Handler<string, BaseParams>
     | {
         pattern: URLPattern;
-        middleware: Handler<"", BaseParams>;
+        middleware: Handler<string, BaseParams>;
       }
   )[] = [];
 
@@ -84,28 +84,28 @@ class Server<ServerState extends BaseState = BaseState> {
     State extends BaseState = ServerState,
     Params extends BaseParams = BaseParams
   >(
-    ...middlewares: Handler<"", Params, ServerState & State>[]
+    ...middlewares: Handler<string, Params, ServerState & State>[]
   ): Server<ServerState & State>;
   use<
     State extends BaseState = ServerState,
     Params extends BaseParams = BaseParams
   >(
-    middleware: Handler<"", Params, ServerState & State>
+    middleware: Handler<string, Params, ServerState & State>
   ): Server<ServerState & State>;
   use<
     State extends BaseState = ServerState,
     Params extends BaseParams = BaseParams
   >(
     pattern: URLPattern,
-    ...middlewares: Handler<"", Params, ServerState & State>[]
+    ...middlewares: Handler<string, Params, ServerState & State>[]
   ): Server<ServerState & State>;
   use<Path extends string = string, State extends BaseState = ServerState>(
     path: Path,
     ...middlewares: Handler<Path, ServerState & State>[]
   ): Server<ServerState & State>;
   use(
-    pathOrPatternOrMiddleware: string | URLPattern | Handler<"">,
-    ...middlewares: Handler<"">[]
+    pathOrPatternOrMiddleware: string | URLPattern | Handler<string>,
+    ...middlewares: Handler<string>[]
   ) {
     if (
       typeof pathOrPatternOrMiddleware === "string" ||
@@ -201,7 +201,7 @@ class Server<ServerState extends BaseState = BaseState> {
     return serveTls(this.handle, init);
   }
 
-  private addMiddleware(...middleware: Handler<"", BaseParams>[]) {
+  private addMiddleware(...middleware: Handler<string, BaseParams>[]) {
     for (const m of middleware) {
       this.middlewares.push(m);
     }
@@ -209,7 +209,7 @@ class Server<ServerState extends BaseState = BaseState> {
 
   private addMiddlewareWithPattern(
     pattern: URLPattern | string,
-    ...middleware: Handler<"", BaseParams>[]
+    ...middleware: Handler<string, BaseParams>[]
   ) {
     if (typeof pattern === "string") {
       pattern = new URLPattern({ pathname: pattern });
