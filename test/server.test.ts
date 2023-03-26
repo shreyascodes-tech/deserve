@@ -23,6 +23,27 @@ Deno.test("Test Server Middleware", async () => {
   await assertResponse(actual, expected);
 });
 
+Deno.test("Test Server Middleware with state", async () => {
+  const server = createServer({
+    hello: "world",
+  });
+  server
+    .use<{
+      test: string;
+    }>((event) => {
+      event.state.test = "test";
+    })
+    .use((event) => {
+      return new Response(event.state.hello + " " + event.state.test);
+    });
+
+  const request = new Request("http://localhost:3000");
+  const expected = new Response("world test");
+  const actual = await server.handle(request);
+
+  await assertResponse(actual, expected);
+});
+
 Deno.test("Test Server Middleware with response Headers", async () => {
   const server = createServer();
 

@@ -2,6 +2,7 @@ import { serve, serveTls } from "https://deno.land/std@0.181.0/http/mod.ts";
 
 import {
   BaseParams,
+  BaseState,
   Handler,
   ListenOptions,
   ListenTlsOptions,
@@ -23,7 +24,7 @@ import { createRequestEvent, createResponse, setParams } from "./event.ts";
  * app.listen({ port: 3000 });
  * ```
  */
-class Server {
+class Server<ServerState extends BaseState = BaseState> {
   private middlewares: (
     | Handler<BaseParams>
     | {
@@ -31,6 +32,8 @@ class Server {
         middleware: Handler<BaseParams>;
       }
   )[] = [];
+
+  constructor(public state: ServerState = {} as ServerState) {}
 
   /**
    * The use method is used to register middleware functions that runs on every request
@@ -77,16 +80,32 @@ class Server {
    * });
    * ```
    */
-  use<Params extends BaseParams>(...middlewares: Handler<Params>[]): this;
-  use<Params extends BaseParams>(middleware: Handler<Params>): this;
-  use<Params extends BaseParams>(
+  use<
+    State extends BaseState = ServerState,
+    Params extends BaseParams = BaseParams
+  >(
+    ...middlewares: Handler<Params, ServerState & State>[]
+  ): Server<ServerState & State>;
+  use<
+    State extends BaseState = ServerState,
+    Params extends BaseParams = BaseParams
+  >(
+    middleware: Handler<Params, ServerState & State>
+  ): Server<ServerState & State>;
+  use<
+    State extends BaseState = ServerState,
+    Params extends BaseParams = BaseParams
+  >(
     pattern: URLPattern,
-    ...middlewares: Handler<Params>[]
-  ): this;
-  use<Params extends BaseParams>(
+    ...middlewares: Handler<Params, ServerState & State>[]
+  ): Server<ServerState & State>;
+  use<
+    State extends BaseState = ServerState,
+    Params extends BaseParams = BaseParams
+  >(
     path: string,
-    ...middlewares: Handler<Params>[]
-  ): this;
+    ...middlewares: Handler<Params, ServerState & State>[]
+  ): Server<ServerState & State>;
   use(
     pathOrPatternOrMiddleware: string | URLPattern | Handler<BaseParams>,
     ...middlewares: Handler<BaseParams>[]
@@ -123,7 +142,7 @@ class Server {
     const middlewares = this.middlewares;
     const url = new URL(req.url);
 
-    const event = createRequestEvent(req);
+    const event = createRequestEvent(req, this.state);
 
     let response: Response | undefined;
     for (const middleware of middlewares) {
@@ -217,6 +236,8 @@ class Server {
  *    return new Response("Hello World");
  * });
  */
-export function createServer() {
-  return new Server();
+export function createServer<ServerState extends BaseState = BaseState>(
+  state?: ServerState
+) {
+  return new Server(state);
 }

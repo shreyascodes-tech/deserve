@@ -4,9 +4,9 @@ import {
   Status,
   type Cookie,
 } from "https://deno.land/std@0.181.0/http/mod.ts";
-import type { RequestEvent, Method } from "./event.ts";
+import type { RequestEvent, Method, BaseState } from "./event.ts";
 
-export { Status, Cookie, Method };
+export { Status, Cookie, Method, BaseState };
 
 /**
  * The options that can be passed to the `listen` method.
@@ -33,6 +33,9 @@ export type BaseParams = Record<string, string>;
  * It can return a `Response` object or a `Promise` that resolves to a `Response` object.
  * If the handler function returns `undefined` or `void` the request is passed to the next middleware.
  */
-export type Handler<Params extends BaseParams> = (
-  event: RequestEvent<Params>
+export type Handler<
+  Params extends BaseParams,
+  State extends BaseState = BaseState
+> = (
+  event: RequestEvent<Params, State>
 ) => PromiseOr<Response | void | undefined>;

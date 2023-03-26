@@ -25,13 +25,20 @@ export type Method =
   | "CONNECT"
   | "TRACE";
 
-class Event<Params extends BaseParams = BaseParams> {
+// deno-lint-ignore no-explicit-any
+export type BaseState = Record<string, any>;
+
+class Event<
+  Params extends BaseParams = BaseParams,
+  State extends BaseState = BaseState
+> {
   constructor(
     public readonly request: Request,
     public readonly params: Params,
     public readonly method: Method,
     public readonly headers: Headers,
-    public readonly cookies: Cookies
+    public readonly cookies: Cookies,
+    public readonly state: State = {} as State
   ) {}
 }
 
@@ -74,10 +81,17 @@ export function createResponse(ev: Event, response?: Response) {
  *    - `getAll`: a function to get all the cookies from the request
  *    - `set`: a function to set a cookie on the response
  *    - `delete`: a function to delete a cookie on the response
+ *   - `state`: the state object that is shared across all the middleware functions
  *
  */
-export type RequestEvent<Params extends Record<string, string>> = Event<Params>;
-export function createRequestEvent(request: Request) {
+export type RequestEvent<
+  Params extends Record<string, string>,
+  State extends BaseState = BaseState
+> = Event<Params, State>;
+export function createRequestEvent<State extends BaseState = BaseState>(
+  request: Request,
+  state: State
+) {
   const headers = new Headers();
   const cookies = createCookies(request, headers);
   return new Event(
@@ -85,6 +99,7 @@ export function createRequestEvent(request: Request) {
     {},
     request.method.toUpperCase() as Method,
     headers,
-    cookies
+    cookies,
+    state
   );
 }
