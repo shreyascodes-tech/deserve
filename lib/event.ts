@@ -25,6 +25,8 @@ class Event<
   Params extends BaseParams = BaseParams,
   State extends BaseState = BaseState
 > {
+  public url: URL;
+
   constructor(
     public readonly request: Request,
     public readonly params: Params,
@@ -32,7 +34,9 @@ class Event<
     public readonly headers: Headers,
     public readonly cookies: Cookies,
     public readonly state: State = {} as State
-  ) {}
+  ) {
+    this.url = new URL(request.url);
+  }
 }
 
 export function setParams<Params extends BaseParams = BaseParams>(

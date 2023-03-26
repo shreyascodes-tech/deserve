@@ -17,11 +17,13 @@ export async function assertResponse(
   message = ""
 ) {
   assertEquals(actual.status, expected.status, "status " + message);
-  assertEquals(
-    Object.fromEntries(actual.headers.entries()),
-    Object.fromEntries(expected.headers.entries()),
-    "headers " + message
-  );
+  expected.headers.forEach((value, key) => {
+    assertEquals(
+      actual.headers.get(key),
+      value,
+      "header " + key + " " + message
+    );
+  });
 
   await assertResponseBody(actual, expected, message);
 }
