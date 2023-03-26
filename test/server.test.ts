@@ -83,22 +83,17 @@ Deno.test("Test Server Middleware with path", async () => {
 });
 
 Deno.test("Test Server Middleware with path patterns", async () => {
-  const patterns = {
-    "/users/:id": ["/users/1", new Response("Hello 1")],
-    "/users/:id/posts/:postId": ["/users/1/posts/2", new Response("Hello 1 2")],
-  } as const;
-
   const server = createServer();
 
-  for (const [pattern, [_, response]] of Object.entries(patterns)) {
-    server.use(pattern, () => {
-      return response.clone();
-    });
-  }
+  server.use("/users/:id/friends/:friendId", (event) => {
+    return new Response(
+      `Hello from user ${event.params.id} friend ${event.params.friendId}`
+    );
+  });
 
-  for (const [pattern, [path, expected]] of Object.entries(patterns)) {
-    const request = new Request(`http://localhost:3000${path}`);
-    const actual = await server.handle(request);
-    await assertResponse(actual, expected, `pattern: ${pattern}`);
-  }
+  const request = new Request("http://localhost:3000/users/1/friends/2");
+  const expected = new Response("Hello from user 1 friend 2");
+  const actual = await server.handle(request);
+
+  await assertResponse(actual, expected);
 });
