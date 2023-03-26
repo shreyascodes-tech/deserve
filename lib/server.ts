@@ -234,7 +234,9 @@ class Server<ServerState extends BaseState = BaseState> {
  * });
  */
 export function createServer<ServerState extends BaseState = BaseState>(
-  state?: ServerState
+  state: ServerState = {} as ServerState
 ) {
   return new Server(state);
 }
+
+export { type Server };

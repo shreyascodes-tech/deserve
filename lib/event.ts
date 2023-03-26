@@ -1,4 +1,4 @@
-import { Status, BaseParams } from "./types.ts";
+import { Status, BaseParams, BaseState } from "./types.ts";
 import { createCookies, Cookies } from "./cookies.ts";
 
 /**
@@ -11,8 +11,6 @@ import { createCookies, Cookies } from "./cookies.ts";
  *  - PATCH
  *  - HEAD
  *  - OPTIONS
- *  - CONNECT
- *  - TRACE
  */
 export type Method =
   | "GET"
@@ -21,12 +19,7 @@ export type Method =
   | "DELETE"
   | "PATCH"
   | "HEAD"
-  | "OPTIONS"
-  | "CONNECT"
-  | "TRACE";
-
-// deno-lint-ignore no-explicit-any
-export type BaseState = Record<string, any>;
+  | "OPTIONS";
 
 class Event<
   Params extends BaseParams = BaseParams,
@@ -48,6 +41,14 @@ export function setParams<Params extends BaseParams = BaseParams>(
 ) {
   // @ts-ignore - we are mutating the event
   ev.params = params;
+}
+
+export function setState<State extends BaseState = BaseState>(
+  ev: Event,
+  state: State
+) {
+  // @ts-ignore - we are mutating the event
+  ev.state = state;
 }
 
 export function createResponse(ev: Event, response?: Response) {

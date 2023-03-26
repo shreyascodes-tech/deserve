@@ -4,9 +4,9 @@ import {
   Status,
   type Cookie,
 } from "https://deno.land/std@0.181.0/http/mod.ts";
-import type { RequestEvent, Method, BaseState } from "./event.ts";
+import type { RequestEvent, Method } from "./event.ts";
 
-export { Status, Cookie, Method, BaseState };
+export { Status, Cookie, Method };
 
 /**
  * The options that can be passed to the `listen` method.
@@ -26,6 +26,12 @@ export type PromiseOr<T> = T | Promise<T>;
  * Represents the params of a requested path.
  */
 export type BaseParams = Record<string, string>;
+
+/**
+ * Represents the shared state of the application.
+ */
+// deno-lint-ignore no-explicit-any
+export type BaseState = Record<string, any>;
 
 type RemoveTail<
   S extends string,
@@ -71,7 +77,7 @@ export type PathParameters<Path extends string> = string extends Path
 export type Handler<
   Path extends string,
   State extends BaseState = BaseState,
-  Params extends BaseParams = PathParameters<Path>
+  Params extends BaseParams = BaseParams
 > = (
-  event: RequestEvent<Params, State>
+  event: RequestEvent<PathParameters<Path> & Params, State>
 ) => PromiseOr<Response | void | undefined>;

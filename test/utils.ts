@@ -1,8 +1,15 @@
 import { assertEquals } from "https://deno.land/std@0.181.0/testing/asserts.ts";
-import {
-  readerFromStreamReader,
-  readAll,
-} from "https://deno.land/std@0.181.0/streams/mod.ts";
+
+async function assertResponseBody(
+  actual: Response,
+  expected: Response,
+  message = ""
+) {
+  if (actual.body === null || expected.body === null) {
+    assertEquals(actual.body, expected.body, "body " + message);
+  }
+  assertEquals(await actual.text(), await expected.text(), message);
+}
 
 export async function assertResponse(
   actual: Response,
@@ -16,13 +23,5 @@ export async function assertResponse(
     "headers " + message
   );
 
-  if (actual.body === null || expected.body === null) {
-    assertEquals(actual.body, expected.body, "body " + message);
-    return;
-  }
-  assertEquals(
-    await readAll(readerFromStreamReader(actual.body.getReader())),
-    await readAll(readerFromStreamReader(expected.body.getReader())),
-    "body " + message
-  );
+  await assertResponseBody(actual, expected, message);
 }
