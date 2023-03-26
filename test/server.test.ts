@@ -1,5 +1,4 @@
-import { Status } from "../lib/types.ts";
-import { createServer } from "../lib/server.ts";
+import { createServer, Status } from "../mod.ts";
 import { assertResponse } from "./utils.ts";
 
 Deno.test("Test server with no middlewares", async () => {

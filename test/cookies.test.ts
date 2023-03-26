@@ -1,4 +1,4 @@
-import { createServer } from "../lib/server.ts";
+import { createServer } from "../mod.ts";
 import { assertResponse } from "./utils.ts";
 
 Deno.test("Get Cookie", async () => {
