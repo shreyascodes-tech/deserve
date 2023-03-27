@@ -8,14 +8,15 @@ export type LoggerOptions = {
         time_in_ms: number,
         res: Response | void | undefined
       ) => string);
+  writer?: WritableStream;
 };
 
 const formats = [
+  ":date",
   ":method",
   ":url",
   ":path",
   ":status",
-  ":res[content-length]",
   ":res[content-type]",
   ":res[time_ms]",
 ] as const;
@@ -31,6 +32,8 @@ function f(format: string) {
       .map((segment) => {
         if (formats.includes(segment as typeof formats[number])) {
           switch (segment) {
+            case ":date":
+              return new Date().toLocaleDateString();
             case ":method":
               return event.method;
             case ":url":
@@ -39,10 +42,8 @@ function f(format: string) {
               return event.url.pathname;
             case ":status":
               return res?.status ?? Status.NotFound.toString();
-            case ":res[content-length]":
-              return res?.headers.get("content-length") ?? "";
             case ":res[content-type]":
-              return res?.headers.get("content-type") ?? "";
+              return res?.headers.get("Content-Type") ?? "";
             case ":res[time_ms]":
               return time_in_ms;
           }
@@ -62,21 +63,31 @@ function defaultFormat(
     res?.status ?? 404
   }] ${event.url.pathname} ${time_in_ms}ms`;
 }
-
 export function createLogger(
   options: LoggerOptions = {
     format: defaultFormat,
+    writer: Deno.stdout.writable,
   }
 ): Hook {
-  const format =
-    typeof options.format === "string" ? f(options.format) : options.format;
+  const format = options.format
+    ? typeof options.format === "string"
+      ? f(options.format)
+      : options.format
+    : defaultFormat;
+  const logWriter = new TextEncoderStream();
+  logWriter.readable.pipeTo(options.writer ?? Deno.stdout.writable);
+  const writable = logWriter.writable.getWriter();
+
+  const log = (msg?: string) => {
+    return writable.write(msg + "\n");
+  };
 
   return async function $loggerHook(event, resolve) {
     const start = Date.now();
     const res = await resolve(event);
 
     const time = Date.now() - start;
-    console.log(format?.(event, time, res));
+    await log(format?.(event, time, res));
 
     return res;
   };

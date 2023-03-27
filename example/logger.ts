@@ -1,12 +1,14 @@
 import { createServer, createRouter, createLogger } from "../mod.ts";
 
-const server = createServer().useHook(createLogger());
+const server = createServer().useHook(
+  createLogger({
+    format: ":method :url :status :res[content-type] :res[time_ms] ms",
+  })
+);
 
 const router = createRouter({ server });
 
 router.get("/", () => {
-  console.log("Hello World!");
-
   return Response.json({
     message: "Hello World!",
   });
