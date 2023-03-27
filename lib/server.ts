@@ -209,7 +209,7 @@ class Server<ServerState extends BaseState = BaseState> {
    * ```
    */
   listen(init: ListenOptions) {
-    return serve(this.handle, init);
+    return serve(this.handle.bind(this), init);
   }
 
   /**
@@ -231,7 +231,7 @@ class Server<ServerState extends BaseState = BaseState> {
    * ```
    */
   listenTls(init: ListenTlsOptions) {
-    return serveTls(this.handle, init);
+    return serveTls(this.handle.bind(this), init);
   }
 
   private addMiddleware(...middleware: Handler<string, BaseParams>[]) {

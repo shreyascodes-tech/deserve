@@ -22,11 +22,11 @@ export class Routes {
   handleEvent(event: RequestEvent<BaseParams>) {
     const { pathname } = new URL(event.request.url);
 
-    for (let i = 0; i < this.paths.length; i++) {
+    for (let i = 0; i < this.handlers.length; i++) {
       const method = this.methods[i];
       const handlers = this.handlers[i];
       const pattern = new URLPattern({
-        pathname: joinURL(this.prefix ?? "/", this.paths[i] ?? "/**"),
+        pathname: joinURL(this.prefix ?? "/", this.paths[i] ?? "/**") || "/",
       });
 
       const match = pattern?.exec(pathname, event.request.url) ?? undefined;
@@ -46,6 +46,7 @@ export class Routes {
 
       for (const handler of handlers) {
         const result = handler(event);
+
         if (result) {
           return result;
         }

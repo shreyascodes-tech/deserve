@@ -80,14 +80,14 @@ class Router<
    *
    * ```
    */
-  use<Path extends string = string, State extends BaseState = RouterState>(
+  use<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   use<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  use<Path extends string = string, State extends BaseState = RouterState>(
+  use<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -121,14 +121,14 @@ class Router<
    *
    * ```
    */
-  get<Path extends string = string, State extends BaseState = RouterState>(
+  get<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   get<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  get<Path extends string = string, State extends BaseState = RouterState>(
+  get<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -151,14 +151,14 @@ class Router<
    *
    * ```
    */
-  post<Path extends string = string, State extends BaseState = RouterState>(
+  post<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   post<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  post<Path extends string = string, State extends BaseState = RouterState>(
+  post<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -181,14 +181,14 @@ class Router<
    *
    * ```
    */
-  put<Path extends string = string, State extends BaseState = RouterState>(
+  put<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   put<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  put<Path extends string = string, State extends BaseState = RouterState>(
+  put<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -211,14 +211,14 @@ class Router<
    *
    * ```
    */
-  delete<Path extends string = string, State extends BaseState = RouterState>(
+  delete<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   delete<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  delete<Path extends string = string, State extends BaseState = RouterState>(
+  delete<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -240,14 +240,14 @@ class Router<
    * }); // This handler will run on every PATCH request to the path /api/v1
    * ```
    */
-  head<Path extends string = string, State extends BaseState = RouterState>(
+  head<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   head<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  head<Path extends string = string, State extends BaseState = RouterState>(
+  head<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -270,14 +270,14 @@ class Router<
    *
    * ```
    */
-  options<Path extends string = string, State extends BaseState = RouterState>(
+  options<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   options<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  options<Path extends string = string, State extends BaseState = RouterState>(
+  options<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {
@@ -300,14 +300,14 @@ class Router<
    *
    * ```
    */
-  patch<Path extends string = string, State extends BaseState = RouterState>(
+  patch<State extends BaseState = RouterState, Path extends string = string>(
     path: Path,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ): Router<Prefix, RouterState & State>;
   patch<State extends BaseState = RouterState>(
     ...handlers: Handler<string, State & RouterState, BaseParams>[]
   ): Router<Prefix, RouterState & State>;
-  patch<Path extends string = string, State extends BaseState = RouterState>(
+  patch<State extends BaseState = RouterState, Path extends string = string>(
     path: Path | Handler<Path, State & RouterState, PathParameters<Prefix>>,
     ...handlers: Handler<Path, State & RouterState, PathParameters<Prefix>>[]
   ) {

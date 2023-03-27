@@ -79,6 +79,9 @@ Deno.test("Test Router routes", async () => {
   const router = createRouter({ server });
 
   router
+    .get("/", () => {
+      return new Response("Hello from GET@/");
+    })
     .get("/test", () => {
       return new Response("Hello from GET@test");
     })
@@ -100,6 +103,12 @@ Deno.test("Test Router routes", async () => {
     .head("/test", () => {
       return new Response("Hello from HEAD@test");
     });
+
+  const request = new Request("http://localhost:3000");
+  const expected = new Response(`Hello from GET@/`);
+  const actual = await server.handle(request);
+
+  await assertResponse(actual, expected);
 
   for (const method of [
     "GET",
