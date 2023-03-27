@@ -6,9 +6,17 @@ import {
   Handler,
   ListenOptions,
   ListenTlsOptions,
+  Status,
+  Hook,
+  NotFoundHandler,
 } from "./types.ts";
 
-import { createRequestEvent, createResponse, setParams } from "./event.ts";
+import {
+  createRequestEvent,
+  createResponse,
+  RequestEvent,
+  setParams,
+} from "./event.ts";
 
 /**
  * The Server represents a server instance that can be used to handle requests.
@@ -33,7 +41,16 @@ class Server<ServerState extends BaseState = BaseState> {
       }
   )[] = [];
 
-  constructor(public state: ServerState = {} as ServerState) {}
+  private hook: Hook<ServerState> = (event, resolve) => resolve(event);
+
+  constructor(
+    public state: ServerState = {} as ServerState,
+    private notFoundHandler: NotFoundHandler = ({
+      method,
+      url: { pathname },
+    }) =>
+      new Response(`cannot ${method} ${pathname}`, { status: Status.NotFound })
+  ) {}
 
   /**
    * The use method is used to register middleware functions that runs on every request
@@ -120,6 +137,33 @@ class Server<ServerState extends BaseState = BaseState> {
   }
 
   /**
+   * The useHook method is used to register a hook function that runs before every request.
+   * The hook function takes the request event object and a resolve function as arguments,
+   * the resolve function is used to call the next hook or the registered middleware functions.
+   * the hook function can return a Response object or a Promise that resolves to a Response object.
+   *
+   * Example:
+   * ```ts
+   * const app = createServer();
+   * app.useHook((event, resolve) => {
+   *      if (!event.cookies.get("token")) {
+   *          return new Response("Unauthorized", { status: Status.Unauthorized });
+   *      }
+   *      return resolve();
+   * });
+   * app.use((event) => {
+   *   return new Response("Hello World");
+   * }); // The response will be "Unauthorized" if the token cookie is not set
+   * ```
+   */
+  useHook<State extends BaseState = BaseState>(
+    hook: Hook<ServerState & State>
+  ) {
+    this.addHook(hook as Hook<ServerState>);
+    return this as Server<ServerState & State>;
+  }
+
+  /**
    * The handle method is used to handle a request and return a response
    * it takes a request and executes all the matching middleware functions
    *
@@ -136,30 +180,19 @@ class Server<ServerState extends BaseState = BaseState> {
    * ```
    */
   async handle(req: Request) {
-    const middlewares = this.middlewares;
-    const url = new URL(req.url);
+    const event = createRequestEvent(req, {
+      ...this.state,
+    });
 
-    const event = createRequestEvent(req, this.state);
+    const res = await this.hook(event as RequestEvent<never, ServerState>, () =>
+      this.handler(event)
+    );
 
-    let response: Response | undefined;
-    for (const middleware of middlewares) {
-      if (typeof middleware === "function") {
-        response = (await middleware(event)) as Response | undefined;
-      } else {
-        const { pattern, middleware: m } = middleware;
-
-        const match = pattern.exec(url);
-        if (!match) continue;
-
-        setParams(event, match.pathname.groups);
-
-        response = (await m(event)) as Response | undefined;
-      }
-
-      if (response) break;
+    if (!res) {
+      return this.notFoundHandler(event);
     }
 
-    return createResponse(event, response);
+    return res;
   }
 
   /**
@@ -218,6 +251,38 @@ class Server<ServerState extends BaseState = BaseState> {
     for (const m of middleware) {
       this.middlewares.push({ pattern, middleware: m });
     }
+  }
+
+  private async handler(event: RequestEvent) {
+    const middlewares = this.middlewares;
+    const url = event.url;
+
+    let response: Response | undefined;
+    for (const middleware of middlewares) {
+      if (typeof middleware === "function") {
+        response = (await middleware(event)) as Response | undefined;
+      } else {
+        const { pattern, middleware: m } = middleware;
+
+        const match = pattern.exec(url);
+        if (!match) continue;
+
+        setParams(event, match.pathname.groups);
+
+        response = (await m(event)) as Response | undefined;
+      }
+
+      if (response) break;
+    }
+
+    return createResponse(event, response);
+  }
+
+  private addHook(hook: Hook<ServerState>) {
+    const _hook = this.hook as Hook<ServerState>;
+    this.hook = async (event, resolve) => {
+      return await _hook(event, (event) => hook(event, resolve));
+    };
   }
 }
 

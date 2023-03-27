@@ -4,7 +4,7 @@ import { assertResponse } from "./utils.ts";
 Deno.test("Test server with no middlewares", async () => {
   const server = createServer();
   const request = new Request("http://localhost:3000");
-  const expected = new Response("Not Found", { status: Status.NotFound });
+  const expected = new Response("cannot GET /", { status: Status.NotFound });
   const actual = await server.handle(request);
 
   await assertResponse(actual, expected);
@@ -96,4 +96,96 @@ Deno.test("Test Server Middleware with path patterns", async () => {
   const actual = await server.handle(request);
 
   await assertResponse(actual, expected);
+});
+
+Deno.test("Test Server with Hooks", async () => {
+  const server = createServer();
+  server
+    .useHook((event, resolve) => {
+      if (!event.cookies.get("token")) {
+        return new Response("Unauthorized", { status: Status.Unauthorized });
+      }
+      return resolve(event);
+    })
+    .use((event) => {
+      return new Response(
+        `Hello from middleware ${event.cookies.get("token")}`
+      );
+    });
+  {
+    const request = new Request("http://localhost:3000");
+    const expected = new Response("Unauthorized", {
+      status: Status.Unauthorized,
+    });
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected);
+  }
+  {
+    const request = new Request("http://localhost:3000", {
+      headers: {
+        Cookie: "token=123",
+      },
+    });
+    const expected = new Response("Hello from middleware 123");
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected);
+  }
+});
+
+Deno.test("Test Server with multiple hooks", async () => {
+  const server = createServer();
+  server
+    .useHook((event, resolve) => {
+      if (!event.cookies.get("token")) {
+        return new Response("Unauthorized", { status: Status.Unauthorized });
+      }
+      return resolve(event);
+    })
+    .useHook((event, resolve) => {
+      if (event.cookies.get("token") !== "123") {
+        return new Response("Invalid token", { status: Status.Unauthorized });
+      }
+      return resolve(event);
+    })
+    .use((event) => {
+      return new Response(
+        `Hello from middleware ${event.cookies.get("token")}`
+      );
+    });
+
+  {
+    const request = new Request("http://localhost:3000");
+    const expected = new Response("Unauthorized", {
+      status: Status.Unauthorized,
+    });
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected, "Without token");
+  }
+  {
+    const request = new Request("http://localhost:3000", {
+      headers: {
+        Cookie: "token=1234",
+      },
+    });
+    const expected = new Response("Invalid token", {
+      status: Status.Unauthorized,
+    });
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected, "Invalid token");
+  }
+  {
+    const request = new Request("http://localhost:3000", {
+      headers: {
+        Cookie: "token=123",
+      },
+    });
+    const expected = new Response("Hello from middleware 123");
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected, "Valid token");
+  }
 });

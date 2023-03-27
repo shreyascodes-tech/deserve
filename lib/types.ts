@@ -81,3 +81,14 @@ export type Handler<
 > = (
   event: RequestEvent<PathParameters<Path> & Params, State>
 ) => PromiseOr<Response | void | undefined>;
+
+export type NotFoundHandler = (
+  ...args: Parameters<Handler>
+) => PromiseOr<Response>;
+
+export type Hook<State extends BaseState = BaseState> = (
+  event: RequestEvent<BaseParams, State>,
+  resolve: (
+    event: RequestEvent<BaseParams, State>
+  ) => PromiseOr<Response | void | undefined>
+) => PromiseOr<Response | void | undefined>;

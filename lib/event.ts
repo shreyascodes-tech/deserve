@@ -1,4 +1,4 @@
-import { Status, BaseParams, BaseState } from "./types.ts";
+import { BaseParams, BaseState } from "./types.ts";
 import { createCookies, Cookies } from "./cookies.ts";
 
 /**
@@ -57,10 +57,7 @@ export function setState<State extends BaseState = BaseState>(
 
 export function createResponse(ev: Event, response?: Response) {
   if (!response) {
-    return new Response("Not Found", {
-      status: Status.NotFound,
-      headers: ev.headers,
-    });
+    return;
   }
 
   response.headers.forEach((value, key) => {
