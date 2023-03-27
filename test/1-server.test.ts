@@ -189,3 +189,18 @@ Deno.test("Test Server with multiple hooks", async () => {
     await assertResponse(actual, expected, "Valid token");
   }
 });
+
+Deno.test("Test Server Error Handling", async () => {
+  const server = createServer();
+  server.use(() => {
+    throw new Error("Test Error");
+  });
+
+  const request = new Request("http://localhost:3000");
+  const expected = new Response("Internal Server Error", {
+    status: Status.InternalServerError,
+  });
+  const actual = await server.handle(request);
+
+  await assertResponse(actual, expected);
+});

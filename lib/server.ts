@@ -49,7 +49,17 @@ class Server<ServerState extends BaseState = BaseState> {
       method,
       url: { pathname },
     }) =>
-      new Response(`cannot ${method} ${pathname}`, { status: Status.NotFound })
+      new Response(`cannot ${method} ${pathname}`, { status: Status.NotFound }),
+    private errorHandler: (event: RequestEvent, error: unknown) => Response = (
+      event,
+      error
+    ) => {
+      console.log(`Error in request to ${event.method}@${event.url.pathname}`);
+      console.error(error);
+      return new Response("Internal Server Error", {
+        status: Status.InternalServerError,
+      });
+    }
   ) {}
 
   /**
@@ -184,15 +194,20 @@ class Server<ServerState extends BaseState = BaseState> {
       ...this.state,
     });
 
-    const res = await this.hook(event as RequestEvent<never, ServerState>, () =>
-      this.handler(event)
-    );
+    try {
+      const res = await this.hook(
+        event as RequestEvent<never, ServerState>,
+        () => this.handler(event)
+      );
 
-    if (!res) {
-      return this.notFoundHandler(event);
+      if (!res) {
+        return this.notFoundHandler(event);
+      }
+
+      return res;
+    } catch (error) {
+      return this.errorHandler(event, error);
     }
-
-    return res;
   }
 
   /**
