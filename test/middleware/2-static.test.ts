@@ -59,4 +59,18 @@ Deno.test("Serve Static", async () => {
 
     await assertResponse(actual, expected);
   }
+  {
+    const request = new Request("http://localhost:3000/test.png");
+    const img = await Deno.readFile("./example/static/test.png");
+    const expected = new Response(img, {
+      headers: {
+        "content-type": "image/png",
+        "accept-ranges": "bytes",
+        "content-length": img.byteLength.toString(),
+      },
+    });
+    const actual = await server.handle(request);
+
+    await assertResponse(actual, expected);
+  }
 });
