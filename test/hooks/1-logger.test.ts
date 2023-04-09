@@ -24,7 +24,7 @@ Deno.test("Logger", async () => {
 
   file.close();
   const log = await Deno.readTextFile(filePath);
-  assertEquals(log, "27/3/2023 GET[200] / 2ms\n");
+  assertEquals(log, `${new Date().toLocaleDateString()} GET[200] / 2ms\n`);
 });
 
 Deno.test("Logger with custom format", async () => {

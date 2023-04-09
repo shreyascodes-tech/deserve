@@ -17,6 +17,7 @@ import {
   RequestEvent,
   setParams,
 } from "./event.ts";
+import { executeHooks } from "./middleware.ts";
 
 /**
  * The Server represents a server instance that can be used to handle requests.
@@ -41,7 +42,7 @@ class Server<ServerState extends BaseState = BaseState> {
       }
   )[] = [];
 
-  private hook: Hook<ServerState> = (event, resolve) => resolve(event);
+  private hooks: Hook<ServerState>[] = [];
 
   constructor(
     public state: ServerState = {} as ServerState,
@@ -195,9 +196,10 @@ class Server<ServerState extends BaseState = BaseState> {
     });
 
     try {
-      const res = await this.hook(
-        event as RequestEvent<never, ServerState>,
-        () => this.handler(event)
+      const res = await executeHooks(
+        this.hooks,
+        event,
+        this.handler.bind(this)
       );
 
       if (!res) {
@@ -294,10 +296,7 @@ class Server<ServerState extends BaseState = BaseState> {
   }
 
   private addHook(hook: Hook<ServerState>) {
-    const _hook = this.hook as Hook<ServerState>;
-    this.hook = async (event, resolve) => {
-      return await _hook(event, (event) => hook(event, resolve));
-    };
+    this.hooks.push(hook);
   }
 }
 
